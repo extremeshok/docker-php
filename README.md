@@ -4,6 +4,7 @@
 * S6
 * cron (/etc/cron.d) enabled for scheduling tasks
 * PHP 7.2 from CODECASTS PHP Repository for Alpine
+* Zend opcache enabled
 * Low memory usage (~30MB)
 * Optimized for 100 concurrent users
 * Only use resources when there is traffic (PHP-FPM ondemand PM)
