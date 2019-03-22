@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv sh
+
+while ! bash /xshok-init.sh ; do
+  echo "Waiting for init to complete"
+  sleep 5s
+done
+
+# -F, --nodaemonize  force to stay in foreground, and ignore daemonize option from config file
+# -O, --force-stderr  force output to stderr in nodaemonize even if stderr is not a TTY
+# -c <path>|<file>  Look for php.ini file in this directory
+# -g, --pid <file>  Specify the PID file location.
+
+
+php-fpm7 -F -O -c /etc/php7 -g /run/php-fpm7.pid
