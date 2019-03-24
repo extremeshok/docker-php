@@ -54,6 +54,9 @@ RUN echo "**** Install composer ****" \
   && php installer.php --install-dir=/usr/local/bin --filename=installer.php \
   && rm -rf /tmp/composer
 
+RUN echo "**** install msmtp ****" \
+  && apk-install msmtp
+
 RUN echo "**** configure ****"
 COPY rootfs/ /
 
