@@ -3,6 +3,9 @@
 ## enable case insensitve matching
 shopt -s nocaseglob
 
+PHP_REDIS_HOST=${PHP_REDIS_HOST:-redis}
+PHP_REDIS_PORT=${PHP_REDIS_PORT:-6379}
+
 if [ -d "/etc/nginx/conf.d" ] && [ -w "/etc/nginx/conf.d" ] ; then
 
   if [ ! -z "$SMTP_HOST" ] && [ ! -z "$SMTP_USER" ] && [ ! -z "$SMTP_PASS" ] ; then
@@ -66,6 +69,15 @@ EOF
   session.save_path = "tcp://${PHP_REDIS_HOST}:${PHP_REDIS_PORT}"
 EOF
   fi
+fi
+
+echo "#### Checking PHP configs ####"
+/usr/sbin/php-fpm7 -t
+result=$?
+if [ "$result" != "0" ] ; then
+  echo "ERROR: CONFIG DAMAGED, sleeping ......"
+  sleep 1d
+  exit 1
 fi
 
 if [ "$PHP_REDIS_SESSIONS" == "yes" ] || [ "$PHP_REDIS_SESSIONS" == "true" ] || [ "$PHP_REDIS_SESSIONS" == "on" ] || [ "$PHP_REDIS_SESSIONS" == "1" ] ; then

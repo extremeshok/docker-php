@@ -11,4 +11,4 @@ done
 # -g, --pid <file>  Specify the PID file location.
 
 
-php-fpm7 -F -O -c /etc/php7 -g /run/php-fpm7.pid
+/usr/sbin/php-fpm7 -F -O -c /etc/php7 -g /run/php-fpm7.pid
