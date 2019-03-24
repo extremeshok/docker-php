@@ -12,6 +12,7 @@
 * Nobody php user
 * Graceful shutdown
 * Expose php disabled
+* msmtp: send email via smtp server, requires SMTP_HOST, SMTP_USER, SMTP_PASS
 * Optional: php sessions in redis
 * Optional: install extra php extensions
 * Optional: set php memory, timeout and max filesize
@@ -26,9 +27,13 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_EXTRA_EXTENSIONS="list,of,php,extensions"
 
 # PHP options
-* PHP_MAX_SIZE=${PHP_MAX_SIZE:-32}
-* PHP_TIMEOUT=${PHP_TIMEOUT:-300}
-* PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-128}
+* PHP_MAX_SIZE=32 (in mbytes)
+* PHP_TIMEOUT=300 (in seconds)
+* PHP_MEMORY_LIMIT=128 (in mbytes)
+* SMTP_HOST=
+* SMTP_PORT=587
+* SMTP_USER=
+* SMTP_PASS=
 
 # Extras
 * composer
