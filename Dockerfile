@@ -20,11 +20,14 @@ RUN echo  "**** Install php and some extensions ****" \
   php-dom@php \
   php-gd@php \
   php-iconv@php \
+  php-imagick@php \
   php-imap@php \
   php-intl@php \
   php-json@php \
   php-mbstring@php \
+  php-mcrypt@php \
   php-mysqli@php \
+  php-mysqlnd@php \
   php-opcache@php \
   php-openssl@php \
   php-pcntl@php \
@@ -34,6 +37,8 @@ RUN echo  "**** Install php and some extensions ****" \
   php-posix@php \
   php-redis@php \
   php-session@php \
+  php-sodium@php \
+  php-sqlite3@php \
   php-xml@php \
   php-xmlreader@php \
   php-zlib@php

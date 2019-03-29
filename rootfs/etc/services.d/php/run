@@ -5,10 +5,9 @@ while ! bash /xshok-init.sh ; do
   sleep 5s
 done
 
+# s6-nice used to set the nice value of php-fpm to -10, will warn if it cannot be set
 # -F, --nodaemonize  force to stay in foreground, and ignore daemonize option from config file
 # -O, --force-stderr  force output to stderr in nodaemonize even if stderr is not a TTY
 # -c <path>|<file>  Look for php.ini file in this directory
 # -g, --pid <file>  Specify the PID file location.
-
-
-/usr/sbin/php-fpm7 -F -O -c /etc/php7 -g /run/php-fpm7.pid
+s6-nice -I -10 /usr/sbin/php-fpm7 -F -O -c /etc/php7 -g /run/php-fpm7.pid

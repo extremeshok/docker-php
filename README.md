@@ -4,6 +4,7 @@
 * S6
 * cron (/etc/cron.d) enabled for scheduling tasks
 * PHP 7.2 from CODECASTS PHP Repository for Alpine
+* IONICE set to -10
 * Zend opcache enabled
 * Low memory usage (~30MB)
 * Optimized for 100 concurrent users
@@ -19,17 +20,19 @@
 
 # PHP-Redis-sessions
 * PHP_REDIS_SESSIONS=yes
-* PHP_REDIS_HOST=${PHP_REDIS_HOST:-redis}
-* PHP_REDIS_PORT=${PHP_REDIS_PORT:-6379}
+* PHP_REDIS_HOST=redis
+* PHP_REDIS_PORT=6379
 
 # Install extra php extensions
 https://github.com/codecasts/php-alpine#available-packages
 * PHP_EXTRA_EXTENSIONS="list,of,php,extensions"
 
 # PHP options
-* PHP_MAX_SIZE=32 (in mbytes)
-* PHP_TIMEOUT=300 (in seconds)
-* PHP_MEMORY_LIMIT=128 (in mbytes)
+* PHP_TIMEZONE=UTC
+* PHP_MAX_TIME=180 (in seconds)
+* PHP_MAX_UPLOAD_SIZE=32 (in mbyte)
+* PHP_MEMORY_LIMIT=256 (in mbyte)
+
 * SMTP_HOST=
 * SMTP_PORT=587
 * SMTP_USER=
@@ -53,11 +56,14 @@ https://github.com/codecasts/php-alpine#available-packages
 * php-fpm
 * php-gd
 * php-iconv
+* php-imagick
 * php-imap
 * php-intl
 * php-json
 * php-mbstring
+* php-mcrypt
 * php-mysqli
+* php-mysqlnd
 * php-opcache
 * php-openssl
 * php-pcntl
@@ -67,6 +73,8 @@ https://github.com/codecasts/php-alpine#available-packages
 * php-posix
 * php-redis
 * php-session
+* php-sodium
+* php-sqlite3
 * php-xml
 * php-xmlreader
 * php-zlib
