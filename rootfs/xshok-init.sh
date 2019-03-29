@@ -1,5 +1,9 @@
 #!/bin/bash
-
+################################################################################
+# This is property of eXtremeSHOK.com
+# You are free to use, modify and distribute, however you may not remove this notice.
+# Copyright (c) Adrian Jon Kriel :: admin@extremeshok.com
+################################################################################
 ## enable case insensitve matching
 shopt -s nocaseglob
 
@@ -10,15 +14,27 @@ PHP_TIMEZONE=${PHP_TIMEZONE:-UTC}
 PHP_MAX_TIME=${PHP_MAX_TIME:-180}
 PHP_MAX_UPLOAD_SIZE=${PHP_MAX_UPLOAD_SIZE:-32}
 PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-256}
+PHP_DISABLE_FUNCTIONS=${:-shell_exec}
 
 PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%M}"
 PHP_MAX_TIME="${PHP_MAX_TIME%s}"
 PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%M}"
 
-if [ -d "/etc/nginx/conf.d" ] && [ -w "/etc/nginx/conf.d" ] ; then
 
+## Install extra php-extensions
+if [ ! -z "$PHP_EXTRA_EXTENSIONS" ] ; then
+  for extension in ${PHP_EXTRA_EXTENSIONS//,/ } ; do
+    extension="${extension#php7-}"
+    extension=${extension#php-}
+    extension=${extension%@php}
+    echo "Installing php extension: ${extension}"
+    apk-install "php-${extension}@php"
+  done
+fi
+
+## Configure Remote SMTP config
+if [ -d "/etc/" ] && [ -w "/etc/" ] && [ -d "/etc/nginx/conf.d" ] && [ -w "/etc/nginx/conf.d" ] ; then
   if [ ! -z "$SMTP_HOST" ] && [ ! -z "$SMTP_USER" ] && [ ! -z "$SMTP_PASS" ] ; then
-    # Generating Remote SMTP config
     cat << EOF >> /etc/msmtprc
 defaults
 port ${SMTP_PORT:-587}
@@ -37,52 +53,47 @@ account default : remote
 
 EOF
     echo 'sendmail_path = "/usr/bin/msmtp -C /etc/msmtprc -t"' > /etc/php7/conf.d/zz-msmtp.ini
+  fi
+fi
 
+## Configure PHP
+  if [ -d "/etc/php7/conf.d" ] && [ -w "/etc/php7/conf.d" ] ; then
+    if [ "$PHP_DISABLE_FUNCTIONS" == "no" ] || [ "$PHP_DISABLE_FUNCTIONS" == "false" ] || [ "$PHP_DISABLE_FUNCTIONS" == "off" ] || [ "$PHP_DISABLE_FUNCTIONS" == "0" ] ; then
+      echo "" > /etc/php7/php-fpm-conf.d/xs_disable_functions.conf
+    else
+      echo "php_admin_value[disable_functions] = ${PHP_DISABLE_FUNCTIONS}" > /etc/php7/php-fpm-conf.d/xs_disable_functions.conf
+    fi
   fi
 
-  exit 0
+  if [ -d "/etc/php7/php-fpm-conf.d/" ] && [ -w "/etc/php7/php-fpm-conf.d/" ] ; then
 
-
-  if [ ! -z "$PHP_EXTRA_EXTENSIONS" ] ; then
-    for extension in ${PHP_EXTRA_EXTENSIONS//,/ } ; do
-      extension="${extension#php7-}"
-      extension=${extension#php-}
-      echo "Installing php extension: ${extension}"
-      apk-install "php-${extension}@php"
-    done
-  fi
-
-  if [ "$PHP_REDIS_SESSIONS" == "yes" ] || [ "$PHP_REDIS_SESSIONS" == "true" ] || [ "$PHP_REDIS_SESSIONS" == "on" ] || [ "$PHP_REDIS_SESSIONS" == "1" ] ; then
-    echo "Enabling redis sessions"
-    cat << EOF > /etc/php7/conf.d/xs_redis.ini
-  session.save_handler = redis
-  session.save_path = "tcp://${PHP_REDIS_HOST}:${PHP_REDIS_PORT}"
+    if [ "$PHP_REDIS_SESSIONS" == "yes" ] || [ "$PHP_REDIS_SESSIONS" == "true" ] || [ "$PHP_REDIS_SESSIONS" == "on" ] || [ "$PHP_REDIS_SESSIONS" == "1" ] ; then
+      echo "Enabling redis sessions"
+      cat << EOF > /etc/php7/conf.d/xs_redis.ini
+session.save_handler = redis
+session.save_path = "tcp://${PHP_REDIS_HOST}:${PHP_REDIS_PORT}"
 EOF
-  fi
+    fi
 
-  echo "date.timezone = ${PHP_TIMEZONE}" > /etc/php7/conf.d/xs_timezone.ini
+    echo "date.timezone = ${PHP_TIMEZONE}" > /etc/php7/conf.d/xs_timezone.ini
 
-  cat << EOF > /etc/php7/conf.d/xs_max_time.ini
+    cat << EOF > /etc/php7/conf.d/xs_max_time.ini
   max_execution_time = ${PHP_MAX_TIME}
   max_input_time = ${PHP_MAX_TIME}
 EOF
 
-  cat << EOF > /etc/php7/conf.d/xs_max_upload_size.ini
+    cat << EOF > /etc/php7/conf.d/xs_max_upload_size.ini
   upload_max_filesize = ${PHP_MAX_UPLOAD_SIZE}
   post_max_size = ${PHP_MAX_UPLOAD_SIZE}
 EOF
 
-  cat << EOF > /etc/php7/conf.d/xs_max_time.ini
+    cat << EOF > /etc/php7/conf.d/xs_max_time.ini
   max_execution_time = ${PHP_MAX_TIME}
   max_input_time = ${PHP_MAX_TIME}
 EOF
 
-  echo "memory_limit = ${PHP_MEMORY_LIMIT}" > /etc/php7/conf.d/xs_memory_limit.ini
-
-
-
-
-fi
+    echo "memory_limit = ${PHP_MEMORY_LIMIT}" > /etc/php7/conf.d/xs_memory_limit.ini
+  fi
 
 echo "#### Checking PHP configs ####"
 /usr/sbin/php-fpm7 -t

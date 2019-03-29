@@ -1,7 +1,6 @@
 # eXtremeSHOK.com Docker PHP-FPM 7.2 on Alpine Linux
 
-* Alpine Linux 3.8
-* S6
+* Alpine Linux 3.8 with S6
 * cron (/etc/cron.d) enabled for scheduling tasks
 * PHP 7.2 from CODECASTS PHP Repository for Alpine
 * IONICE set to -10
@@ -16,7 +15,7 @@
 * msmtp: send email via smtp server, requires SMTP_HOST, SMTP_USER, SMTP_PASS
 * Optional: php sessions in redis
 * Optional: install extra php extensions
-* Optional: set php memory, timeout and max filesize
+* Optional: set php timezone, memory, timeout and max filesize
 
 # PHP-Redis-sessions
 * PHP_REDIS_SESSIONS=yes
@@ -27,18 +26,20 @@
 https://github.com/codecasts/php-alpine#available-packages
 * PHP_EXTRA_EXTENSIONS="list,of,php,extensions"
 
-# PHP options
+# PHP options (with defaults)
 * PHP_TIMEZONE=UTC
 * PHP_MAX_TIME=180 (in seconds)
 * PHP_MAX_UPLOAD_SIZE=32 (in mbyte)
 * PHP_MEMORY_LIMIT=256 (in mbyte)
+* PHP_DISABLE_FUNCTIONS=shell_exec (set to false to disable, can use a comma separated list)
 
+# EXTERNAL SMTP
 * SMTP_HOST=
 * SMTP_PORT=587
 * SMTP_USER=
 * SMTP_PASS=
 
-# Extras
+# Extra Packages
 * composer
 * gifsicle
 * imagemagick
@@ -47,6 +48,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * optipng
 * pcre
 * pngquant
+* sqlite3
 
 # PHP Extensions
 * php-bcmath
@@ -61,7 +63,6 @@ https://github.com/codecasts/php-alpine#available-packages
 * php-intl
 * php-json
 * php-mbstring
-* php-mcrypt
 * php-mysqli
 * php-mysqlnd
 * php-opcache
@@ -78,3 +79,4 @@ https://github.com/codecasts/php-alpine#available-packages
 * php-xml
 * php-xmlreader
 * php-zlib
+* php7-mcrypt

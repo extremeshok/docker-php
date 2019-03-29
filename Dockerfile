@@ -40,7 +40,8 @@ RUN echo  "**** Install php and some extensions ****" \
   php-sqlite3@php \
   php-xml@php \
   php-xmlreader@php \
-  php-zlib@php
+  php-zlib@php \
+  php7-mcrypt@php
 
 RUN echo "**** Install IONCUBE ****" \
   && mkdir -p /tmp/ioncube \
