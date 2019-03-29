@@ -24,7 +24,7 @@ services:
         - PHP_EXTRA_EXTENSIONS="exif,ftp"
         * PHP_MAX_TIME=32
         * PHP_MAX_TIME=300
-        * PHP_MEMORY_LIMIT=128
+        * PHP_MEMORY_LIMIT=256
         * PHP_DISABLE_FUNCTIONS=shell_exe
       restart: always
       sysctls:

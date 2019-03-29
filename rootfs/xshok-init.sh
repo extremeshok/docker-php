@@ -16,9 +16,12 @@ PHP_MAX_UPLOAD_SIZE=${PHP_MAX_UPLOAD_SIZE:-32}
 PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-256}
 PHP_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
 
+PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%m}"
 PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%M}"
 PHP_MAX_TIME="${PHP_MAX_TIME%s}"
+PHP_MAX_TIME="${PHP_MAX_TIME%S}"
 PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%M}"
+PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%m}"
 
 
 ## Install extra php-extensions
@@ -83,8 +86,8 @@ EOF
 EOF
 
     cat << EOF > /etc/php7/conf.d/xs_max_upload_size.ini
-  upload_max_filesize = ${PHP_MAX_UPLOAD_SIZE}
-  post_max_size = ${PHP_MAX_UPLOAD_SIZE}
+  upload_max_filesize = ${PHP_MAX_UPLOAD_SIZE}M
+  post_max_size = ${PHP_MAX_UPLOAD_SIZE}M
 EOF
 
     cat << EOF > /etc/php7/conf.d/xs_max_time.ini
@@ -92,7 +95,7 @@ EOF
   max_input_time = ${PHP_MAX_TIME}
 EOF
 
-    echo "memory_limit = ${PHP_MEMORY_LIMIT}" > /etc/php7/conf.d/xs_memory_limit.ini
+    echo "memory_limit = ${PHP_MEMORY_LIMIT}M" > /etc/php7/conf.d/xs_memory_limit.ini
   fi
 
 echo "#### Checking PHP configs ####"
