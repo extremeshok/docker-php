@@ -25,7 +25,6 @@ RUN echo  "**** Install php and some extensions ****" \
   php-intl@php \
   php-json@php \
   php-mbstring@php \
-  php-mcrypt@php \
   php-mysqli@php \
   php-mysqlnd@php \
   php-opcache@php \
