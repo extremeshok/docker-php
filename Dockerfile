@@ -59,7 +59,7 @@ RUN echo "**** Install composer ****" \
   && mkdir -p /tmp/composer \
   && cd /tmp/composer \
   && wget https://getcomposer.org/installer -O /tmp/composer/installer.php \
-  && php installer.php --install-dir=/usr/local/bin --filename=installer.php \
+  && php7 installer.php --install-dir=/usr/local/bin --filename=installer.php \
   && rm -rf /tmp/composer
 
 RUN echo "**** install msmtp ****" \
