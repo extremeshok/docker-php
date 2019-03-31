@@ -7,7 +7,7 @@ services:
 #
 ###### xshok-php
     phpfpm:
-      image: extremeshok/php:latest
+      image: extremeshok/php:7.3
       depends_on:
         - redis
       volumes:
