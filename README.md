@@ -1,6 +1,6 @@
 # eXtremeSHOK.com Docker PHP-FPM 7.3 on Alpine Linux
 
-* Alpine Linux 3.9 with S6
+* Alpine Linux 3.8 with S6
 * cron (/etc/cron.d) enabled for scheduling tasks
 * PHP 7.3 from CODECASTS PHP Repository for Alpine
 * IONICE set to -10
@@ -51,32 +51,34 @@ https://github.com/codecasts/php-alpine#available-packages
 * sqlite3
 
 # PHP Extensions
-* php-bcmath
-* php-ctype
-* php-curl
-* php-dom
-* php-fpm
-* php-gd
-* php-iconv
-* php-imagick
-* php-imap
-* php-intl
-* php-json
-* php-mbstring
-* php-mysqli
-* php-mysqlnd
-* php-opcache
-* php-openssl
-* php-pcntl
-* php-pdo
-* php-pdo_mysql
-* php-phar
-* php-posix
-* php-redis
-* php-session
-* php-sodium
-* php-sqlite3
-* php-xml
-* php-xmlreader
-* php-zlib
-* php7-mcrypt
+bcmath
+ctype
+curl
+dom
+gd
+iconv
+imagick
+imap
+intl
+json
+mbstring
+mysqli
+mysqlnd
+opcache
+openssl
+pcntl
+pdo_mysql
+pdo_odbc
+pdo_pgsql
+pdo_sqlite
+pdo
+pear
+phar
+posix
+redis
+session
+sodium
+sqlite3
+xml
+xmlreader
+zlib@php

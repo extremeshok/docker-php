@@ -1,4 +1,4 @@
-FROM extremeshok/baseimage-alpine:3.9 AS BUILD
+FROM extremeshok/baseimage-alpine:3.8 AS BUILD
 LABEL mantainer="Adrian Kriel <admin@extremeshok.com>" vendor="eXtremeSHOK.com"
 
 RUN echo "**** Install packages ****" \
@@ -9,39 +9,42 @@ RUN echo "**** Adding codecasts php-repo ****"
 ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 
 # add the repository, make sure you replace the correct versions if you want.
-RUN echo "@php https://dl.bintray.com/php-alpine/v3.9/php-7.3" >> /etc/apk/repositories
+RUN echo "@php https://dl.bintray.com/php-alpine/v3.8/php-7.3" >> /etc/apk/repositories
 
 # notice the @php is required to avoid getting default php packages from alpine instead.
 RUN echo  "**** Install php and some extensions ****" \
-  && apk-install php7@php php-cli@php php-fpm@php \
-  php-bcmath@php \
-  php-ctype@php \
-  php-curl@php \
-  php-dom@php \
-  php-gd@php \
-  php-iconv@php \
-  php-imagick@php \
-  php-imap@php \
-  php-intl@php \
-  php-json@php \
-  php-mbstring@php \
-  php-mysqli@php \
-  php-mysqlnd@php \
-  php-opcache@php \
-  php-openssl@php \
-  php-pcntl@php \
-  php-pdo_mysql@php \
-  php-pdo@php \
-  php-phar@php \
-  php-posix@php \
-  php-redis@php \
-  php-session@php \
-  php-sodium@php \
-  php-sqlite3@php \
-  php-xml@php \
-  php-xmlreader@php \
-  php-zlib@php \
-  php7-mcrypt@php
+  && apk-install php7@php php7-fpm@php \
+  php7-bcmath@php \
+  php7-ctype@php \
+  php7-curl@php \
+  php7-dom@php \
+  php7-gd@php \
+  php7-iconv@php \
+  php7-imagick@php \
+  php7-imap@php \
+  php7-intl@php \
+  php7-json@php \
+  php7-mbstring@php \
+  php7-mysqli@php \
+  php7-mysqlnd@php \
+  php7-opcache@php \
+  php7-openssl@php \
+  php7-pcntl@php \
+  php7-pdo_mysql@php \
+  php7-pdo_odbc@php \
+  php7-pdo_pgsql@php \
+  php7-pdo_sqlite@php \
+  php7-pdo@php \
+  php7-pear@php \
+  php7-phar@php \
+  php7-posix@php \
+  php7-redis@php \
+  php7-session@php \
+  php7-sodium@php \
+  php7-sqlite3@php \
+  php7-xml@php \
+  php7-xmlreader@php \
+  php7-zlib@php
 
 RUN echo "**** Install IONCUBE ****" \
   && mkdir -p /tmp/ioncube \
