@@ -51,34 +51,34 @@ https://github.com/codecasts/php-alpine#available-packages
 * sqlite3
 
 # PHP Extensions
-bcmath
-ctype
-curl
-dom
-gd
-iconv
-imagick
-imap
-intl
-json
-mbstring
-mysqli
-mysqlnd
-opcache
-openssl
-pcntl
-pdo_mysql
-pdo_odbc
-pdo_pgsql
-pdo_sqlite
-pdo
-pear
-phar
-posix
-redis
-session
-sodium
-sqlite3
-xml
-xmlreader
-zlib@php
+* bcmath
+* ctype
+* curl
+* dom
+* gd
+* iconv
+* imagick
+* imap
+* intl
+* json
+* mbstring
+* mysqli
+* mysqlnd
+* opcache
+* openssl
+* pcntl
+* pdo_mysql
+* pdo_odbc
+* pdo_pgsql
+* pdo_sqlite
+* pdo
+* pear
+* phar
+* posix
+* redis
+* session
+* sodium
+* sqlite3
+* xml
+* xmlreader
+* zlib
