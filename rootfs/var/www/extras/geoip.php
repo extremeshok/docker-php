@@ -1,7 +1,7 @@
 <html>
 <body>
+  <h2>GEOIPv1</h2>
 <?php
-<h2>GEOIPv1</h2>
 $geoip_country_code = getenv(GEOIP_COUNTRY_CODE);
 /*
 $geoip_country_code = $_SERVER['GEOIP_COUNTRY_CODE']; // works as well
