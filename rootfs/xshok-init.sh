@@ -106,12 +106,15 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
     fi
   fi
   # allow root to use wp-cli
+  touch /root/.bashrc
   if ! grep -q "alias wp='/usr/local/bin/wp-cli --allow-root'" /root/.bashrc ; then
     echo "alias wp='/usr/local/bin/wp-cli --allow-root --path=/var/www/html'" >> /root/.bashrc
+    alias wp='/usr/local/bin/wp-cli --allow-root --path=/var/www/html'
   fi
   # allow sudo for nobody user
   if ! grep -q "alias su-nobody='su nobody -s /bin/bash'" /root/.bashrc ; then
     echo "alias su-nobody='su nobody -s /bin/bash'" >> /root/.bashrc
+    alias su-nobody='su nobody -s /bin/bash'
   fi
   # ensure wp-cli is updated
 
@@ -121,8 +124,6 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
       sleep 1d
       exit 1
     fi
-    #ensure the alias is loaded (aka wp command is available)
-    source /root/.bashrc
     echo "Download / Configure / Install Wordpress"
     if ! wp core is-installed ; then
       if wp core download ; then
