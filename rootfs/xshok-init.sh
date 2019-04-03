@@ -131,7 +131,8 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
           else
             this_skip_email=""
           fi
-          if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$PHP_WORDPRESS_URL" --title="$PHP_WORDPRESS_TITLE" --admin_user="$PHP_WORDPRESS_ADMIN_USER" --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email="$PHP_WORDPRESS_ADMIN_EMAIL" $this_skip_email >> /var/www/wordpress.log ; then
+
+          if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url=$PHP_WORDPRESS_URL --title="$PHP_WORDPRESS_TITLE" --admin_user=$PHP_WORDPRESS_ADMIN_USER --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email=$PHP_WORDPRESS_ADMIN_EMAIL $this_skip_email >> /var/www/wordpress.log ; then
             echo "SUCCESS"
           fi
         fi
