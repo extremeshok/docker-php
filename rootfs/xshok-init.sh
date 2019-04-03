@@ -60,6 +60,17 @@ account default : remote
 
 EOF
     echo 'sendmail_path = "/usr/bin/msmtp -C /etc/msmtprc -t"' > /etc/php7/conf.d/zz-msmtp.ini
+
+    if [ -f "/usr/sbin/sendmail" ] ; then
+      mv -f /usr/sbin/sendmail /usr/sbin/sendmail.disabled
+    fi
+    ln -s /usr/bin/msmtp /usr/sbin/sendmail
+  else
+    rm -f /etc/msmtprc
+    rm -f /etc/php7/conf.d/zz-msmtp.ini
+    if [ -f "/usr/sbin/sendmail.disabled" ] ; then
+      mv -f /usr/sbin/sendmail.disabled /usr/sbin/sendmail
+    fi
   fi
 fi
 
