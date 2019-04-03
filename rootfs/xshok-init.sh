@@ -16,6 +16,8 @@ PHP_MAX_UPLOAD_SIZE=${PHP_MAX_UPLOAD_SIZE:-32}
 PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-256}
 PHP_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
 
+PHP_CHOWN=${PHP_CHOWN:-yes}
+
 PHP_WORDPRESS=${PHP_WORDPRESS:-no}
 
 PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%m}"
@@ -134,6 +136,11 @@ if [ "$result" != "0" ] ; then
   echo "ERROR: CONFIG DAMAGED, sleeping ......"
   sleep 1d
   exit 1
+fi
+
+if [ "$PHP_CHOWN" == "yes" ] || [ "$PHP_CHOWN" == "true" ] || [ "$PHP_CHOWN" == "on" ] || [ "$PHP_CHOWN" == "1" ] ; then
+  echo "Setting ownership of /var/www/html"
+  chown -f -R nobody:nobody /var/www/html
 fi
 
 if [ "$PHP_REDIS_SESSIONS" == "yes" ] || [ "$PHP_REDIS_SESSIONS" == "true" ] || [ "$PHP_REDIS_SESSIONS" == "on" ] || [ "$PHP_REDIS_SESSIONS" == "1" ] ; then

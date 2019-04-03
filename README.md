@@ -17,6 +17,7 @@
 * Optional: install extra php extensions
 * Optional: set php timezone, memory, timeout and max filesize
 * Optional: install wp-cli
+* Optional: set ownership of /var/www/html to nobody:nobody
 
 # PHP-Redis-sessions
 * PHP_REDIS_SESSIONS=yes
@@ -34,6 +35,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_MEMORY_LIMIT=256 (in mbyte)
 * PHP_DISABLE_FUNCTIONS=shell_exec (set to false to disable, can use a comma separated list)
 * PHP_WORDPRESS=false (set to true to have the WP_cli installed)
+* PHP_CHOWN=true (set to false to disable)
 
 # EXTERNAL SMTP
 * SMTP_HOST=
