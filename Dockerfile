@@ -2,7 +2,7 @@ FROM extremeshok/baseimage-alpine:3.8 AS BUILD
 LABEL mantainer="Adrian Kriel <admin@extremeshok.com>" vendor="eXtremeSHOK.com"
 
 RUN echo "**** Install packages ****" \
-  && apk-install bash ca-certificates pcre fcgi supervisor curl unzip imagemagick jpegoptim pngquant optipng gifsicle sqlite less
+  && apk-install bash ca-certificates pcre fcgi supervisor curl unzip imagemagick jpegoptim pngquant optipng gifsicle sqlite less mariadb-client
 
 RUN echo "**** Adding codecasts php-repo ****"
 ## https://github.com/codecasts/php-alpine trust this project public key to trust the packages.

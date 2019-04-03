@@ -46,10 +46,12 @@ https://github.com/codecasts/php-alpine#available-packages
 
 # WORDPRESS
 * PHP_WORDPRESS=false (set to true to have the WP_cli installed)
+* PHP_WORDPRESS_LOCALE=en_US
 * PHP_WORDPRESS_DATABASE=
 * PHP_WORDPRESS_DATABASE_USER=
 * PHP_WORDPRESS_DATABASE_PASSWORD=
 * PHP_WORDPRESS_DATABASE_HOST=mysql
+* PHP_WORDPRESS_DATABASE_PREFIX=wp_
 * PHP_WORDPRESS_DATABASE_CHARSET=utf8mb4
 * PHP_WORDPRESS_DATABASE_COLLATE=utf8mb4_unicode_ci
 * shell alias wp = wp-cli --allow-root

@@ -19,10 +19,12 @@ PHP_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
 PHP_CHOWN=${PHP_CHOWN:-yes}
 
 PHP_WORDPRESS=${PHP_WORDPRESS:-no}
+PHP_WORDPRESS_LOCALE=${PHP_WORDPRESS_LOCALE:-en_US}
 PHP_WORDPRESS_DATABASE=${PHP_WORDPRESS_DATABASE:-}
 PHP_WORDPRESS_DATABASE_USER=${PHP_WORDPRESS_DATABASE_USER:-}
 PHP_WORDPRESS_DATABASE_PASSWORD=${PHP_WORDPRESS_DATABASE_PASSWORD:-}
 PHP_WORDPRESS_DATABASE_HOST=${PHP_WORDPRESS_DATABASE_HOST:-mysql}
+PHP_WORDPRESS_DATABASE_PREFIX=${PHP_WORDPRESS_DATABASE_PREFIX:-wp_}
 PHP_WORDPRESS_DATABASE_CHARSET=${PHP_WORDPRESS_DATABASE_CHARSET:-utf8mb4}
 PHP_WORDPRESS_DATABASE_COLLATE=${PHP_WORDPRESS_DATABASE_COLLATE:-utf8mb4_unicode_ci}
 
@@ -99,7 +101,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
   fi
   # allow root to use wp-cli
   if ! grep -q "alias wp='/usr/local/bin/wp-cli --allow-root'" /root/.bashrc ; then
-    echo "alias wp='/usr/local/bin/wp-cli --allow-root'" >> /root/.bashrc
+    echo "alias wp='/usr/local/bin/wp-cli --allow-root --path=/var/www/html'" >> /root/.bashrc
   fi
   # allow sudo for nobody user
   if ! grep -q "alias su-nobody='su nobody -s /bin/bash'" /root/.bashrc ; then
