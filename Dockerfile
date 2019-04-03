@@ -6,7 +6,7 @@ RUN echo "**** Install packages ****" \
 
 RUN echo "**** Adding codecasts php-repo ****"
 ## https://github.com/codecasts/php-alpine trust this project public key to trust the packages.
-ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
+COPY https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 
 # add the repository, make sure you replace the correct versions if you want.
 RUN echo "@php https://dl.bintray.com/php-alpine/v3.8/php-7.3" >> /etc/apk/repositories
