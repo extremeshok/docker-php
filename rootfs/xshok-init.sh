@@ -76,6 +76,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
       exit 1
     fi
     if [ ! -f "/etc/bash_completion.d/wp-completion" ] ; then
+      mkdir -p /etc/bash_completion.d
       wget https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -O /etc/bash_completion.d/wp-completion
     fi
   fi
