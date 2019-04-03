@@ -123,8 +123,8 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
       exit 1
     fi
     echo "Download / Configure / Install Wordpress"
-    if ! /usr/local/bin/wp-cli --allow-root --path=/var/www/html core is-installed >> /var/www/wordpress.log ; then
-      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download >> /var/www/wordpress.log ; then
+    if ! /usr/local/bin/wp-cli --allow-root --path=/var/www/html core is-installed > /dev/null ; then
+      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download  > /dev/null ; then
         if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$PHP_WORDPRESS_DATABASE" --dbuser="$PHP_WORDPRESS_DATABASE_USER" --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost="$PHP_WORDPRESS_DATABASE_HOST" --dbprefix="$PHP_WORDPRESS_DATABASE_PREFIX" --dbcharset="$PHP_WORDPRESS_DATABASE_CHARSET" --dbcollate="$PHP_WORDPRESS_DATABASE_COLLATE" --locale="$PHP_WORDPRESS_LOCALE"  >> /var/www/wordpress.log ; then
           if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "no" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] ; then
             this_skip_email="--skip-email"
