@@ -16,6 +16,7 @@
 * Optional: php sessions in redis
 * Optional: install extra php extensions
 * Optional: set php timezone, memory, timeout and max filesize
+* Optional: install wp-cli
 
 # PHP-Redis-sessions
 * PHP_REDIS_SESSIONS=yes
@@ -32,6 +33,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_MAX_UPLOAD_SIZE=32 (in mbyte)
 * PHP_MEMORY_LIMIT=256 (in mbyte)
 * PHP_DISABLE_FUNCTIONS=shell_exec (set to false to disable, can use a comma separated list)
+* PHP_WORDPRESS=false (set to true to have the WP_cli installed)
 
 # EXTERNAL SMTP
 * SMTP_HOST=

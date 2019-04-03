@@ -16,6 +16,8 @@ PHP_MAX_UPLOAD_SIZE=${PHP_MAX_UPLOAD_SIZE:-32}
 PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-256}
 PHP_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
 
+PHP_WORDPRESS=${PHP_WORDPRESS:-no}
+
 PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%m}"
 PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%M}"
 PHP_MAX_TIME="${PHP_MAX_TIME%s}"
@@ -57,6 +59,29 @@ account default : remote
 EOF
     echo 'sendmail_path = "/usr/bin/msmtp -C /etc/msmtprc -t"' > /etc/php7/conf.d/zz-msmtp.ini
   fi
+fi
+
+#wordpress specific, wp-cli
+if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WORDPRESS" == "on" ] || [ "$PHP_WORDPRESS" == "1" ] ; then
+  if [ ! -f "/usr/local/bin/wp" ] ; then
+    echo "Installing WP-CLI"
+    wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp
+    chmod +x /usr/local/bin/wp
+    if ! wp --info | grep -q "WP-CLI version" ; then
+      echo "ERROR: WP-CLI install failed"
+      rm -f /usr/local/bin/wp
+      sleep 1d
+      exit 1
+    else
+      ln -s /usr/local/bin/wp /usr/local/bin/wp-cli
+    fi
+  fi
+
+  # wait for redis to start
+  while ! echo PING | nc ${PHP_REDIS_HOST} ${PHP_REDIS_PORT} ; do
+    echo "waiting for redis ${PHP_REDIS_HOST}:${PHP_REDIS_PORT}"
+    sleep 5s
+  done
 fi
 
 ## Configure PHP

@@ -47,7 +47,7 @@ RUN echo  "**** Install php and some extensions ****" \
   php7-zlib@php
 
 # allow for php on the command line
-RUN ln -s /bin/php7 /bin/php
+RUN ln -s /usr/bin/php7 /usr/bin/php
 
 RUN echo "**** Install IONCUBE ****" \
   && mkdir -p /tmp/ioncube \
