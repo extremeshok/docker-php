@@ -115,31 +115,29 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
   fi
   # ensure wp-cli is updated
 
-if [ ! -z "$PHP_WORDPRESS_DATABASE" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_USER" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_PASSWORD" ] &&
-[ ! -z "$PHP_WORDPRESS_URL" ] && [ ! -z "$PHP_WORDPRESS_ADMIN_EMAIL" ] ; then
+  if [ ! -z "$PHP_WORDPRESS_DATABASE" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_USER" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_PASSWORD" ] && [ ! -z "$PHP_WORDPRESS_URL" ] && [ ! -z "$PHP_WORDPRESS_ADMIN_EMAIL" ] ; then
 
-  if [ "$PHP_WORDPRESS_SKIP_EMAIL" != "no" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] && [ -z "$PHP_WORDPRESS_SKIP_EMAIL" ]; then
-    echo "ERROR: PHP_WORDPRESS_SKIP_EMAIL enabled, PHP_WORDPRESS_ADMIN_PASSWORD can NOT be empty "
-    sleep 1d
-    exit 1
-  fi
-  echo "Install/Configure wordpress"
-  if ! wp core is-installed ; then
-    if wp core download ; then
-      if wp config create --dbname="$PHP_WORDPRESS_DATABASE" --dbuser="$PHP_WORDPRESS_DATABASE_USER" --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost="$PHP_WORDPRESS_DATABASE_HOST" --dbprefix="$PHP_WORDPRESS_DATABASE_PREFIX" --dbcharset="$PHP_WORDPRESS_DATABASE_CHARSET" --dbcollate="$PHP_WORDPRESS_DATABASE_COLLATE" --locale="$PHP_WORDPRESS_LOCALE"
-        if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "no" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] ; then
-          this_skip_email="--skip-email"
-        else
-          this_skip_email=""
+    if [ "$PHP_WORDPRESS_SKIP_EMAIL" != "no" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] && [ -z "$PHP_WORDPRESS_SKIP_EMAIL" ]; then
+      echo "ERROR: PHP_WORDPRESS_SKIP_EMAIL enabled, PHP_WORDPRESS_ADMIN_PASSWORD can NOT be empty "
+      sleep 1d
+      exit 1
+    fi
+    echo "Install/Configure wordpress"
+    if ! wp core is-installed ; then
+      if wp core download ; then
+        if wp config create --dbname="$PHP_WORDPRESS_DATABASE" --dbuser="$PHP_WORDPRESS_DATABASE_USER" --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost="$PHP_WORDPRESS_DATABASE_HOST" --dbprefix="$PHP_WORDPRESS_DATABASE_PREFIX" --dbcharset="$PHP_WORDPRESS_DATABASE_CHARSET" --dbcollate="$PHP_WORDPRESS_DATABASE_COLLATE" --locale="$PHP_WORDPRESS_LOCALE" ; then
+          if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "no" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] ; then
+            this_skip_email="--skip-email"
+          else
+            this_skip_email=""
+          fi
+          if wp core install --url="$PHP_WORDPRESS_URL" --title="$PHP_WORDPRESS_TITLE" --admin_user="$PHP_WORDPRESS_ADMIN_USER" --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email="$PHP_WORDPRESS_ADMIN_EMAIL" $this_skip_email ; then
+            echo "SUCCESS"
+          fi
         fi
-        if wp core install --url="$PHP_WORDPRESS_URL" --title="$PHP_WORDPRESS_TITLE" --admin_user="$PHP_WORDPRESS_ADMIN_USER" --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email="$PHP_WORDPRESS_ADMIN_EMAIL" $this_skip_email
-          echo "SUCCESS"
-        fi
+      fi
     fi
   fi
-fi
-
-
 fi
 
 ## Configure PHP
