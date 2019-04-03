@@ -18,7 +18,7 @@
 * Optional: set php timezone, memory, timeout and max filesize
 * Optional: install wp-cli
 * Optional: set ownership of /var/www/html to nobody:nobody
-* wordpress install / configure, requires PHP_WORDPRESS_DATABASE, PHP_WORDPRESS_DATABASE_USER, PHP_WORDPRESS_DATABASE_PASSWORD
+* Optional: Install wordpress
 # PHP-Redis-sessions
 * PHP_REDIS_SESSIONS=yes
 * PHP_REDIS_HOST=redis
@@ -54,7 +54,17 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_WORDPRESS_DATABASE_PREFIX=wp_
 * PHP_WORDPRESS_DATABASE_CHARSET=utf8mb4
 * PHP_WORDPRESS_DATABASE_COLLATE=utf8mb4_unicode_ci
-* shell alias wp = wp-cli --allow-root
+* PHP_WORDPRESS_URL=
+* PHP_WORDPRESS_TITLE=PHP_WORDPRESS_URL
+* PHP_WORDPRESS_ADMIN_EMAIL=
+* PHP_WORDPRESS_ADMIN_USER=PHP_WORDPRESS_ADMIN_EMAIL
+* PHP_WORDPRESS_ADMIN_PASSWORD= (blank wp will generate a password and email as long as PHP_WORDPRESS_SKIP_EMAIL is false)
+* PHP_WORDPRESS_SKIP_EMAIL=false
+
+
+# WORDPRESS-NOTES
+* To install wordpress, required: PHP_WORDPRESS_DATABASE, PHP_WORDPRESS_DATABASE_USER, PHP_WORDPRESS_DATABASE_PASSWORD, PHP_WORDPRESS_URL, PHP_WORDPRESS_ADMIN_EMAIL
+* shell alias wp = wp-cli --allow-root --path=/var/www/html
 * allow interactive bash shell for nobody user with the command "su-nobody"
 
 

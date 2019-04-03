@@ -28,13 +28,19 @@ PHP_WORDPRESS_DATABASE_PREFIX=${PHP_WORDPRESS_DATABASE_PREFIX:-wp_}
 PHP_WORDPRESS_DATABASE_CHARSET=${PHP_WORDPRESS_DATABASE_CHARSET:-utf8mb4}
 PHP_WORDPRESS_DATABASE_COLLATE=${PHP_WORDPRESS_DATABASE_COLLATE:-utf8mb4_unicode_ci}
 
+PHP_WORDPRESS_URL=${PHP_WORDPRESS_URL:-}
+PHP_WORDPRESS_TITLE=${PHP_WORDPRESS_TITLE:-$PHP_WORDPRESS_URL}
+PHP_WORDPRESS_ADMIN_EMAIL=${PHP_WORDPRESS_ADMIN_EMAIL:-}
+PHP_WORDPRESS_ADMIN_USER=${PHP_WORDPRESS_ADMIN_USER:$PHP_WORDPRESS_ADMIN_EMAIL}
+PHP_WORDPRESS_ADMIN_PASSWORD=${PHP_WORDPRESS_ADMIN_PASSWORD:-}
+PHP_WORDPRESS_SKIP_EMAIL=${PHP_WORDPRESS_SKIP_EMAIL:-no}
+
 PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%m}"
 PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%M}"
 PHP_MAX_TIME="${PHP_MAX_TIME%s}"
 PHP_MAX_TIME="${PHP_MAX_TIME%S}"
 PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%M}"
 PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%m}"
-
 
 ## Install extra php-extensions
 if [ ! -z "$PHP_EXTRA_EXTENSIONS" ] ; then
@@ -109,8 +115,28 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
   fi
   # ensure wp-cli is updated
 
-if [ ! -z "$PHP_WORDPRESS_DATABASE" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_USER" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_PASSWORD" ] ; then
+if [ ! -z "$PHP_WORDPRESS_DATABASE" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_USER" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_PASSWORD" ] &&
+[ ! -z "$PHP_WORDPRESS_URL" ] && [ ! -z "$PHP_WORDPRESS_ADMIN_EMAIL" ] ; then
+
+  if [ "$PHP_WORDPRESS_SKIP_EMAIL" != "no" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] && [ -z "$PHP_WORDPRESS_SKIP_EMAIL" ]; then
+    echo "ERROR: PHP_WORDPRESS_SKIP_EMAIL enabled, PHP_WORDPRESS_ADMIN_PASSWORD can NOT be empty "
+    sleep 1d
+    exit 1
+  fi
   echo "Install/Configure wordpress"
+  if ! wp core is-installed ; then
+    if wp core download ; then
+      if wp config create --dbname="$PHP_WORDPRESS_DATABASE" --dbuser="$PHP_WORDPRESS_DATABASE_USER" --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost="$PHP_WORDPRESS_DATABASE_HOST" --dbprefix="$PHP_WORDPRESS_DATABASE_PREFIX" --dbcharset="$PHP_WORDPRESS_DATABASE_CHARSET" --dbcollate="$PHP_WORDPRESS_DATABASE_COLLATE" --locale="$PHP_WORDPRESS_LOCALE"
+        if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "no" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] ; then
+          this_skip_email="--skip-email"
+        else
+          this_skip_email=""
+        fi
+        if wp core install --url="$PHP_WORDPRESS_URL" --title="$PHP_WORDPRESS_TITLE" --admin_user="$PHP_WORDPRESS_ADMIN_USER" --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email="$PHP_WORDPRESS_ADMIN_EMAIL" $this_skip_email
+          echo "SUCCESS"
+        fi
+    fi
+  fi
 fi
 
 
