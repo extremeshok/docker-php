@@ -41,6 +41,10 @@ https://github.com/codecasts/php-alpine#available-packages
 * SMTP_USER=
 * SMTP_PASS=
 
+# WORDPRESS
+* shell alias wp = wp-cli --allow-root
+* allow interactive bash shell for nobody user with the command "su-nobody"
+
 # Extra Packages
 * composer
 * gifsicle

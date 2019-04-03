@@ -63,65 +63,69 @@ fi
 
 #wordpress specific, wp-cli
 if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WORDPRESS" == "on" ] || [ "$PHP_WORDPRESS" == "1" ] ; then
-  if [ ! -f "/usr/local/bin/wp" ] ; then
+  if [ ! -f "/usr/local/bin/wp-cli" ] ; then
     echo "Installing WP-CLI"
-    wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp
-    chmod +x /usr/local/bin/wp
+    wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp-cli
+    chmod +x /usr/local/bin/wp-cli
     if ! wp --info | grep -q "WP-CLI version" ; then
       echo "ERROR: WP-CLI install failed"
-      rm -f /usr/local/bin/wp
+      rm -f /usr/local/bin/wp-cli
       sleep 1d
       exit 1
-    else
-      ln -s /usr/local/bin/wp /usr/local/bin/wp-cli
+    fi
+    if [ ! -f "/etc/bash_completion.d/wp-completion" ] ; then
+      wget https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -O /etc/bash_completion.d/wp-completion
     fi
   fi
-
-  # wait for redis to start
-  while ! echo PING | nc ${PHP_REDIS_HOST} ${PHP_REDIS_PORT} ; do
-    echo "waiting for redis ${PHP_REDIS_HOST}:${PHP_REDIS_PORT}"
-    sleep 5s
-  done
+  # allow root to use wp-cli
+  if ! grep -q "alias wp='/usr/local/bin/wp-cli --allow-root'" /root/.bash_aliases ; then
+    echo "alias wp='wp --allow-root'" >> /root/.bash_aliases
+  fi
+  # allow sudo for nobody user
+  if ! grep -q "alias su-nobody='su nobody -s /bin/bash'" /root/.bash_aliases ; then
+    echo "alias su-nobody='su nobody -s /bin/bash'" >> /root/.bash_aliases
+  fi
+  # ensure wp-cli is updated
 fi
 
 ## Configure PHP
-  if [ -d "/etc/php7/conf.d" ] && [ -w "/etc/php7/conf.d" ] ; then
-    if [ "$PHP_DISABLE_FUNCTIONS" == "no" ] || [ "$PHP_DISABLE_FUNCTIONS" == "false" ] || [ "$PHP_DISABLE_FUNCTIONS" == "off" ] || [ "$PHP_DISABLE_FUNCTIONS" == "0" ] ; then
-      echo "" > /etc/php7/php-fpm-conf.d/xs_disable_functions.conf
-    else
-      echo "php_admin_value[disable_functions] = ${PHP_DISABLE_FUNCTIONS}" > /etc/php7/php-fpm-conf.d/xs_disable_functions.conf
-    fi
+if [ -d "/etc/php7/conf.d" ] && [ -w "/etc/php7/conf.d" ] ; then
+  if [ "$PHP_DISABLE_FUNCTIONS" == "no" ] || [ "$PHP_DISABLE_FUNCTIONS" == "false" ] || [ "$PHP_DISABLE_FUNCTIONS" == "off" ] || [ "$PHP_DISABLE_FUNCTIONS" == "0" ] ; then
+    echo "" > /etc/php7/php-fpm-conf.d/xs_disable_functions.conf
+  else
+    echo "php_admin_value[disable_functions] = ${PHP_DISABLE_FUNCTIONS}" > /etc/php7/php-fpm-conf.d/xs_disable_functions.conf
   fi
+fi
 
-  if [ -d "/etc/php7/php-fpm-conf.d/" ] && [ -w "/etc/php7/php-fpm-conf.d/" ] ; then
+if [ -d "/etc/php7/php-fpm-conf.d/" ] && [ -w "/etc/php7/php-fpm-conf.d/" ] ; then
 
-    if [ "$PHP_REDIS_SESSIONS" == "yes" ] || [ "$PHP_REDIS_SESSIONS" == "true" ] || [ "$PHP_REDIS_SESSIONS" == "on" ] || [ "$PHP_REDIS_SESSIONS" == "1" ] ; then
-      echo "Enabling redis sessions"
-      cat << EOF > /etc/php7/conf.d/xs_redis.ini
+  if [ "$PHP_REDIS_SESSIONS" == "yes" ] || [ "$PHP_REDIS_SESSIONS" == "true" ] || [ "$PHP_REDIS_SESSIONS" == "on" ] || [ "$PHP_REDIS_SESSIONS" == "1" ] ; then
+    echo "Enabling redis sessions"
+    cat << EOF > /etc/php7/conf.d/xs_redis.ini
 session.save_handler = redis
 session.save_path = "tcp://${PHP_REDIS_HOST}:${PHP_REDIS_PORT}"
 EOF
-    fi
+  fi
 
-    echo "date.timezone = ${PHP_TIMEZONE}" > /etc/php7/conf.d/xs_timezone.ini
+  echo "date.timezone = ${PHP_TIMEZONE}" > /etc/php7/conf.d/xs_timezone.ini
 
-    cat << EOF > /etc/php7/conf.d/xs_max_time.ini
+  cat << EOF > /etc/php7/conf.d/xs_max_time.ini
   max_execution_time = ${PHP_MAX_TIME}
   max_input_time = ${PHP_MAX_TIME}
 EOF
 
-    cat << EOF > /etc/php7/conf.d/xs_max_upload_size.ini
+  cat << EOF > /etc/php7/conf.d/xs_max_upload_size.ini
   upload_max_filesize = ${PHP_MAX_UPLOAD_SIZE}M
   post_max_size = ${PHP_MAX_UPLOAD_SIZE}M
 EOF
 
-    cat << EOF > /etc/php7/conf.d/xs_max_time.ini
+  cat << EOF > /etc/php7/conf.d/xs_max_time.ini
   max_execution_time = ${PHP_MAX_TIME}
   max_input_time = ${PHP_MAX_TIME}
 EOF
 
-    echo "memory_limit = ${PHP_MEMORY_LIMIT}M" > /etc/php7/conf.d/xs_memory_limit.ini
-  fi
+  echo "memory_limit = ${PHP_MEMORY_LIMIT}M" > /etc/php7/conf.d/xs_memory_limit.ini
+fi
 
 echo "#### Checking PHP configs ####"
 /usr/sbin/php-fpm7 -t
