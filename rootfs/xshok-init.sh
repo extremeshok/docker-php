@@ -123,15 +123,15 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
       exit 1
     fi
     echo "Download / Configure / Install Wordpress"
-    if ! /usr/local/bin/wp-cli --allow-root --path=/var/www/html core is-installed ; then
-      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download ; then
-        if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$PHP_WORDPRESS_DATABASE" --dbuser="$PHP_WORDPRESS_DATABASE_USER" --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost="$PHP_WORDPRESS_DATABASE_HOST" --dbprefix="$PHP_WORDPRESS_DATABASE_PREFIX" --dbcharset="$PHP_WORDPRESS_DATABASE_CHARSET" --dbcollate="$PHP_WORDPRESS_DATABASE_COLLATE" --locale="$PHP_WORDPRESS_LOCALE" ; then
+    if ! /usr/local/bin/wp-cli --allow-root --path=/var/www/html core is-installed >> /var/www/wordpress.log ; then
+      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download >> /var/www/wordpress.log ; then
+        if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$PHP_WORDPRESS_DATABASE" --dbuser="$PHP_WORDPRESS_DATABASE_USER" --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost="$PHP_WORDPRESS_DATABASE_HOST" --dbprefix="$PHP_WORDPRESS_DATABASE_PREFIX" --dbcharset="$PHP_WORDPRESS_DATABASE_CHARSET" --dbcollate="$PHP_WORDPRESS_DATABASE_COLLATE" --locale="$PHP_WORDPRESS_LOCALE"  >> /var/www/wordpress.log ; then
           if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "no" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] ; then
             this_skip_email="--skip-email"
           else
             this_skip_email=""
           fi
-          if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$PHP_WORDPRESS_URL" --title="$PHP_WORDPRESS_TITLE" --admin_user="$PHP_WORDPRESS_ADMIN_USER" --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email="$PHP_WORDPRESS_ADMIN_EMAIL" $this_skip_email ; then
+          if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$PHP_WORDPRESS_URL" --title="$PHP_WORDPRESS_TITLE" --admin_user="$PHP_WORDPRESS_ADMIN_USER" --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email="$PHP_WORDPRESS_ADMIN_EMAIL" $this_skip_email >> /var/www/wordpress.log ; then
             echo "SUCCESS"
           fi
         fi
