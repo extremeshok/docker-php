@@ -69,7 +69,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
     echo "Installing WP-CLI"
     wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp-cli
     chmod +x /usr/local/bin/wp-cli
-    if ! wp --info | grep -q "WP-CLI version" ; then
+    if ! /usr/local/bin/wp-cli --info | grep -q "WP-CLI version" ; then
       echo "ERROR: WP-CLI install failed"
       rm -f /usr/local/bin/wp-cli
       sleep 1d
