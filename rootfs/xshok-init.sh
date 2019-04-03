@@ -81,12 +81,12 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
     fi
   fi
   # allow root to use wp-cli
-  if ! grep -q "alias wp='/usr/local/bin/wp-cli --allow-root'" /root/.bash_aliases ; then
-    echo "alias wp='wp --allow-root'" >> /root/.bash_aliases
+  if ! grep -q "alias wp='/usr/local/bin/wp-cli --allow-root'" /root/.bashrc ; then
+    echo "alias wp='wp --allow-root'" >> /root/.bashrc
   fi
   # allow sudo for nobody user
-  if ! grep -q "alias su-nobody='su nobody -s /bin/bash'" /root/.bash_aliases ; then
-    echo "alias su-nobody='su nobody -s /bin/bash'" >> /root/.bash_aliases
+  if ! grep -q "alias su-nobody='su nobody -s /bin/bash'" /root/.bashrc ; then
+    echo "alias su-nobody='su nobody -s /bin/bash'" >> /root/.bashrc
   fi
   # ensure wp-cli is updated
 fi
