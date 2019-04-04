@@ -19,14 +19,21 @@ PHP_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
 PHP_CHOWN=${PHP_CHOWN:-yes}
 
 PHP_WORDPRESS=${PHP_WORDPRESS:-no}
+PHP_WORDPRESS_REDIS_OBJECT_CACHE=${PHP_WORDPRESS_REDIS_OBJECT_CACHE:-no}
 PHP_WORDPRESS_LOCALE=${PHP_WORDPRESS_LOCALE:-en_US}
 PHP_WORDPRESS_DATABASE=${PHP_WORDPRESS_DATABASE:-}
 PHP_WORDPRESS_DATABASE_USER=${PHP_WORDPRESS_DATABASE_USER:-}
 PHP_WORDPRESS_DATABASE_PASSWORD=${PHP_WORDPRESS_DATABASE_PASSWORD:-}
 PHP_WORDPRESS_DATABASE_HOST=${PHP_WORDPRESS_DATABASE_HOST:-mysql}
-PHP_WORDPRESS_DATABASE_PREFIX=${PHP_WORDPRESS_DATABASE_PREFIX:-wp_}
+PHP_WORDPRESS_DATABASE_PREFIX=${PHP_WORDPRESS_DATABASE_PREFIX:-}
 PHP_WORDPRESS_DATABASE_CHARSET=${PHP_WORDPRESS_DATABASE_CHARSET:-utf8mb4}
 PHP_WORDPRESS_DATABASE_COLLATE=${PHP_WORDPRESS_DATABASE_COLLATE:-utf8mb4_unicode_ci}
+
+PHP_WORDPRESS_UPDATE=${PHP_WORDPRESS_UPDATE:-yes}
+
+PHP_WORDPRESS_SUPER_CACHE=${PHP_WORDPRESS_SUPER_CACHE:-yes}
+PHP_WORDPRESS_NGINX_CACHE=${PHP_WORDPRESS_NGINX_CACHE:-no}
+PHP_WORDPRESS_CACHE_ENABLER=${PHP_WORDPRESS_CACHE_ENABLER:-no}
 
 PHP_WORDPRESS_URL=${PHP_WORDPRESS_URL:-}
 PHP_WORDPRESS_TITLE=${PHP_WORDPRESS_TITLE:-$PHP_WORDPRESS_URL}
@@ -122,22 +129,134 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
       sleep 1d
       exit 1
     fi
+
+    if [ ! -z "$PHP_WORDPRESS_DATABASE_PREFIX" ] ; then
+      PHP_WORDPRESS_DATABASE_PREFIX="$(echo $RANDOM)_"
+    fi
+
     echo "Download / Configure / Install Wordpress"
     if ! /usr/local/bin/wp-cli --allow-root --path=/var/www/html core is-installed > /dev/null ; then
       if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download  > /dev/null ; then
-        if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$PHP_WORDPRESS_DATABASE" --dbuser="$PHP_WORDPRESS_DATABASE_USER" --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost="$PHP_WORDPRESS_DATABASE_HOST" --dbprefix="$PHP_WORDPRESS_DATABASE_PREFIX" --dbcharset="$PHP_WORDPRESS_DATABASE_CHARSET" --dbcollate="$PHP_WORDPRESS_DATABASE_COLLATE" --locale="$PHP_WORDPRESS_LOCALE"  >> /var/www/wordpress.log ; then
+        if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname=$PHP_WORDPRESS_DATABASE --dbuser=$PHP_WORDPRESS_DATABASE_USER --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost=$PHP_WORDPRESS_DATABASE_HOST --dbprefix=$PHP_WORDPRESS_DATABASE_PREFIX --dbcharset=$PHP_WORDPRESS_DATABASE_CHARSET --dbcollate=$PHP_WORDPRESS_DATABASE_COLLATE --locale=$PHP_WORDPRESS_LOCALE  >> /var/www/wordpress.log ; then
           if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "no" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] ; then
             this_skip_email="--skip-email"
           else
             this_skip_email=""
           fi
-
           if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url=$PHP_WORDPRESS_URL --title="$PHP_WORDPRESS_TITLE" --admin_user=$PHP_WORDPRESS_ADMIN_USER --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email=$PHP_WORDPRESS_ADMIN_EMAIL $this_skip_email >> /var/www/wordpress.log ; then
+
+            # change admin userid from 1 to a random 6 digit number
+            WPUID="$(echo $RANDOM$RANDOM |cut -c1-6)"
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html db query "UPDATE ${PHP_WORDPRESS_DATABASE_PREFIX}users SET ID=${WPUID} WHERE ID=1; UPDATE ${PHP_WORDPRESS_DATABASE_PREFIX}usermeta SET user_id=${WPUID} WHERE user_id=1"
+
+            # add index on autoload
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html db query "ALTER TABLE ${PHP_WORDPRESS_DATABASE_PREFIX}options ADD INDEX autoload_idx (autoload)"
+
+            # change permalinks out of the box
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html rewrite structure '/%post_id%/%postname%/'
+
+            # Disallow file editing
+            awk "/That's all, stop editing/ {
+            print \"# eXtremeSHOK.com Prevent file editing\"
+            print \"define('DISALLOW_FILE_EDIT', true);
+            }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
+
+            chmod 0755 /var/www/html/wp-content
+            rm -f /var/www/html/readme.html
+            # create some empty .htaccess files to satisfy some security plugins.
+            touch /var/www/html/wp-content/.htaccess
+            chmod 0644 /var/www/html/wp-content/.htaccess
+            touch /var/www/html/wp-admin/.htaccess
+            chmod 0644 /var/www/html/wp-admin/.htaccess
+            touch /var/www/html/.htaccess
+            chmod 0644 /var/www/html/.htaccess
+            touch /var/www/html/wp-content/uploads/index.php
+
+            if [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "true" ] || [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "on" ] || [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "1" ] ; then
+              echo "Enabling object redis cache"
+              awk "/That's all, stop editing/ {
+              print \"# eXtremeSHOK.com Redis Object Cache\"
+              print \"define( 'WP_REDIS_CLIENT', 'predis' );\"
+              print \"define( 'WP_REDIS_SCHEME', 'tcp' );\"
+              print \"define( 'WP_REDIS_HOST', '${PHP_REDIS_HOST}' );\"
+              print \"define( 'WP_REDIS_PORT', '${PHP_REDIS_PORT}' );\"
+              print \"define( 'WP_REDIS_SELECTIVE_FLUSH', 'true' );\"
+              print \"#define( 'WP_REDIS_MAXTTL', '7200' );\"
+              print \"#define( 'WP_REDIS_GLOBAL_GROUPS', '['blog-details', 'blog-id-cache', 'blog-lookup', 'global-posts', 'networks', 'rss', 'sites', 'site-details', 'site-lookup', 'site-options', 'site-transient', 'users', 'useremail', 'userlogins', 'usermeta', 'user_meta', 'userslugs']' );\"
+              print \"#define( 'WP_REDIS_IGNORED_GROUPS', '['counts', 'plugins']' );\"
+              print \"#define( 'WP_REDIS_DISABLED', 'true' );\"
+              }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
+              /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate redis-cache
+            fi
+
+            # Remove Plugins
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin deactivate --uninstall hello
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin delete hello
+
+            # Usability Plugins
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate duplicate-post
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate tinymce-advanced
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-mail-smtp
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate amp
+
+            # cache and cdn
+            if [ "$PHP_WORDPRESS_SUPER_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "true" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "on" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "1" ] ; then
+              /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-super-cache
+            elif [ "$PHP_WORDPRESS_NGINX_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_NGINX_CACHE" == "true" ] || [ "$PHP_WORDPRESS_NGINX_CACHE" == "on" ] || [ "$PHP_WORDPRESS_NGINX_CACHE" == "1" ] ; then
+             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate nginx-helper
+             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install cdn-enabler
+             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install bunnycdn
+           elif [ "$PHP_WORDPRESS_CACHE_ENABLER" == "yes" ] || [ "$PHP_WORDPRESS_CACHE_ENABLER" == "true" ] || [ "$PHP_WORDPRESS_CACHE_ENABLER" == "on" ] || [ "$PHP_WORDPRESS_CACHE_ENABLER" == "1" ] ; then
+             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate cache-enabler
+             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install cdn-enabler
+             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install bunnycdn
+            else
+              /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install cdn-enabler
+              /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install bunnycdn
+            fi
+
+            # commerce
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate woocommerce
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate woo-gutenberg-products-block
+
+            # security
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate disable-xml-rpc-pingback
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate disable-emojis
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate two-factor
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate limit-login-attempts-reloaded
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate sucuri-scanner
+
+            # SEO
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wordpress-seo
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate google-sitemap-generator
+
+            # Debug
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate query-monitor
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate p3-profiler
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate gtmetrix-for-wordpress
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate server-ip-memory-usage
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate google-analytics-dashboard-for-wp
+
+            # performance
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate health-check
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate rocket-lazy-load
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate lazy-load-for-videos
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate heartbeat-control
+
             echo "SUCCESS"
           fi
         fi
       fi
     fi
+  fi
+
+  if [ "$PHP_WORDPRESS_UPDATE" == "yes" ] || [ "$PHP_WORDPRESS_UPDATE" == "true" ] || [ "$PHP_WORDPRESS_UPDATE" == "on" ] || [ "$PHP_WORDPRESS_UPDATE" == "1" ] ; then
+    /usr/local/bin/wp-cli --allow-root --path=/var/www/html  core update
+    /usr/local/bin/wp-cli --allow-root --path=/var/www/html  core update-db
+    /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all
+  else
+    /usr/local/bin/wp-cli --allow-root --path=/var/www/html core version
+    /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin status
   fi
 fi
 

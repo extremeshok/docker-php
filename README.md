@@ -18,7 +18,7 @@
 * Optional: set php timezone, memory, timeout and max filesize
 * Optional: install wp-cli
 * Optional: set ownership of /var/www/html to nobody:nobody
-* Optional: Install wordpress
+* Optional: Install wordpress, selected plugins and optimise it
 # PHP-Redis-sessions
 * PHP_REDIS_SESSIONS=yes
 * PHP_REDIS_HOST=redis
@@ -36,8 +36,6 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_DISABLE_FUNCTIONS=shell_exec (set to false to disable, can use a comma separated list)
 * PHP_CHOWN=true (set to false to disable)
 
-
-
 # EXTERNAL SMTP
 * SMTP_HOST=
 * SMTP_PORT=587
@@ -46,12 +44,13 @@ https://github.com/codecasts/php-alpine#available-packages
 
 # WORDPRESS
 * PHP_WORDPRESS=false (set to true to have the WP_cli installed)
+* PHP_WORDPRESS_REDIS_OBJECT_CACHE=false (set to true to have wordpress redis object cache enabled)
 * PHP_WORDPRESS_LOCALE=en_US
 * PHP_WORDPRESS_DATABASE=
 * PHP_WORDPRESS_DATABASE_USER=
 * PHP_WORDPRESS_DATABASE_PASSWORD=
 * PHP_WORDPRESS_DATABASE_HOST=mysql
-* PHP_WORDPRESS_DATABASE_PREFIX=wp_
+* PHP_WORDPRESS_DATABASE_PREFIX= (default will use random numbers, for security)
 * PHP_WORDPRESS_DATABASE_CHARSET=utf8mb4
 * PHP_WORDPRESS_DATABASE_COLLATE=utf8mb4_unicode_ci
 * PHP_WORDPRESS_URL=
@@ -60,12 +59,39 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_WORDPRESS_ADMIN_USER=PHP_WORDPRESS_ADMIN_EMAIL
 * PHP_WORDPRESS_ADMIN_PASSWORD= (blank wp will generate a password and email as long as PHP_WORDPRESS_SKIP_EMAIL is false)
 * PHP_WORDPRESS_SKIP_EMAIL=false
-
+* PHP_WORDPRESS_UPDATE=yes
+* PHP_WORDPRESS_SUPER_CACHE=yes
+* PHP_WORDPRESS_NGINX_CACHE=no
+* PHP_WORDPRESS_CACHE_ENABLER=no
 
 # WORDPRESS-NOTES
 * To install wordpress, required: PHP_WORDPRESS_DATABASE, PHP_WORDPRESS_DATABASE_USER, PHP_WORDPRESS_DATABASE_PASSWORD, PHP_WORDPRESS_URL, PHP_WORDPRESS_ADMIN_EMAIL
 * shell alias wp = wp-cli --allow-root --path=/var/www/html
 * allow interactive bash shell for nobody user with the command "su-nobody"
+
+# Wordpress extensions
+* duplicate-post
+* tinymce-advanced
+* wp-mail-smtp
+* amp
+* woocommerce
+* woo-gutenberg-products-block
+* disable-xml-rpc-pingback
+* disable-emojis
+* two-factor
+* limit-login-attempts-reloaded
+* sucuri-scanner
+* wordpress-seo
+* google-sitemap-generator
+* query-monitor
+* p3-profiler
+* gtmetrix-for-wordpress
+* server-ip-memory-usage
+* google-analytics-dashboard-for-wp
+* health-check
+* rocket-lazy-load
+* lazy-load-for-videos
+* heartbeat-control
 
 
 # Extra Packages
