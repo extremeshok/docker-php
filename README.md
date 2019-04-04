@@ -70,28 +70,30 @@ https://github.com/codecasts/php-alpine#available-packages
 * allow interactive bash shell for nobody user with the command "su-nobody"
 
 # Wordpress extensions
-* duplicate-post
-* tinymce-advanced
-* wp-mail-smtp
 * amp
-* woocommerce
-* woo-gutenberg-products-block
-* disable-xml-rpc-pingback
+* better-search-replace
 * disable-emojis
-* two-factor
-* limit-login-attempts-reloaded
-* sucuri-scanner
-* wordpress-seo
-* google-sitemap-generator
-* query-monitor
-* p3-profiler
-* gtmetrix-for-wordpress
-* server-ip-memory-usage
+* disable-xml-rpc-pingback
+* duplicate-post
+* envato-market
 * google-analytics-dashboard-for-wp
+* google-sitemap-generator
+* gtmetrix-for-wordpress
 * health-check
-* rocket-lazy-load
-* lazy-load-for-videos
 * heartbeat-control
+* lazy-load-for-videos
+* limit-login-attempts-reloaded
+* p3-profiler
+* query-monitor
+* rocket-lazy-load
+* server-ip-memory-usage
+* sucuri-scanner
+* tinymce-advanced
+* two-factor
+* woo-gutenberg-products-block
+* woocommerce
+* wordpress-seo
+* wp-mail-smtp
 
 
 # Extra Packages

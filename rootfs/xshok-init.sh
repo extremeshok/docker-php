@@ -198,6 +198,8 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate tinymce-advanced
             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-mail-smtp
             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate amp
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate better-search-replace
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate https://envato.github.io/wp-envato-market/dist/envato-market.zip
 
             # cache and cdn
             if [ "$PHP_WORDPRESS_SUPER_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "true" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "on" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "1" ] ; then
@@ -239,9 +241,9 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
 
             # performance
             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate health-check
-            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate rocket-lazy-load
-            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate lazy-load-for-videos
             /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate heartbeat-control
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install rocket-lazy-load
+            /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install lazy-load-for-videos
 
             echo "SUCCESS"
           fi
@@ -251,8 +253,8 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
   fi
 
   if [ "$PHP_WORDPRESS_UPDATE" == "yes" ] || [ "$PHP_WORDPRESS_UPDATE" == "true" ] || [ "$PHP_WORDPRESS_UPDATE" == "on" ] || [ "$PHP_WORDPRESS_UPDATE" == "1" ] ; then
-    /usr/local/bin/wp-cli --allow-root --path=/var/www/html  core update
-    /usr/local/bin/wp-cli --allow-root --path=/var/www/html  core update-db
+    /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update
+    /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update-db
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all
   else
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html core version
