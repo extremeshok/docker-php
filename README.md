@@ -50,6 +50,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_WORDPRESS_DATABASE_USER=
 * PHP_WORDPRESS_DATABASE_PASSWORD=
 * PHP_WORDPRESS_DATABASE_HOST=mysql
+* PHP_WORDPRESS_DATABASE_PORT=3306
 * PHP_WORDPRESS_DATABASE_PREFIX= (default will use random numbers, for security)
 * PHP_WORDPRESS_DATABASE_CHARSET=utf8mb4
 * PHP_WORDPRESS_DATABASE_COLLATE=utf8mb4_unicode_ci

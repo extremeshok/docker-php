@@ -22,6 +22,7 @@ export PHP_WORDPRESS_DATABASE=${PHP_WORDPRESS_DATABASE:-}
 export PHP_WORDPRESS_DATABASE_USER=${PHP_WORDPRESS_DATABASE_USER:-}
 export PHP_WORDPRESS_DATABASE_PASSWORD=${PHP_WORDPRESS_DATABASE_PASSWORD:-}
 export PHP_WORDPRESS_DATABASE_HOST=${PHP_WORDPRESS_DATABASE_HOST:-mysql}
+export PHP_WORDPRESS_DATABASE_PORT=${PHP_WORDPRESS_DATABASE_PORT:-3306}
 export PHP_WORDPRESS_DATABASE_PREFIX=${PHP_WORDPRESS_DATABASE_PREFIX:-}
 export PHP_WORDPRESS_DATABASE_CHARSET=${PHP_WORDPRESS_DATABASE_CHARSET:-utf8mb4}
 export PHP_WORDPRESS_DATABASE_COLLATE=${PHP_WORDPRESS_DATABASE_COLLATE:-utf8mb4_unicode_ci}
@@ -132,6 +133,12 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
       exit 1
     fi
 
+    # Wait for MySQL to warm-up
+    while ! mysqladmin ping --host "$PHP_WORDPRESS_DATABASE_HOST" --port "$PHP_WORDPRESS_DATABASE_PORT" -u"$PHP_WORDPRESS_DATABASE_USER" -p"$PHP_WORDPRESS_DATABASE_PASSWORD" --silent; do
+      echo "Waiting for database to come up..."
+      sleep 2
+    done
+
     if [ -z "$PHP_WORDPRESS_DATABASE_PREFIX" ] ; then
       PHP_WORDPRESS_DATABASE_PREFIX="$(echo $RANDOM)_"
     fi
@@ -139,7 +146,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
     echo "Download / Configure / Install Wordpress"
     if ! /usr/local/bin/wp-cli --allow-root --path=/var/www/html core is-installed > /dev/null ; then
       if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download  > /dev/null ; then
-        if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname=$PHP_WORDPRESS_DATABASE --dbuser=$PHP_WORDPRESS_DATABASE_USER --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost=$PHP_WORDPRESS_DATABASE_HOST --dbprefix=$PHP_WORDPRESS_DATABASE_PREFIX --dbcharset=$PHP_WORDPRESS_DATABASE_CHARSET --dbcollate=$PHP_WORDPRESS_DATABASE_COLLATE --locale=$PHP_WORDPRESS_LOCALE  >> /var/www/wordpress.log ; then
+        if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname=$PHP_WORDPRESS_DATABASE --dbuser=$PHP_WORDPRESS_DATABASE_USER --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost=$PHP_WORDPRESS_DATABASE_HOST --dbport=$PHP_WORDPRESS_DATABASE_PORT --dbprefix=$PHP_WORDPRESS_DATABASE_PREFIX --dbcharset=$PHP_WORDPRESS_DATABASE_CHARSET --dbcollate=$PHP_WORDPRESS_DATABASE_COLLATE --locale=$PHP_WORDPRESS_LOCALE  >> /var/www/wordpress.log ; then
           if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "no" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] ; then
             this_skip_email="--skip-email"
           else
