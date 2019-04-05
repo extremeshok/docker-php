@@ -160,7 +160,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
             # Disallow file editing
             awk "/That's all, stop editing/ {
             print \"# eXtremeSHOK.com Prevent file editing\"
-            print \"define('DISALLOW_FILE_EDIT', true);
+            print \"define('DISALLOW_FILE_EDIT', true);\"
             }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
 
             chmod 0755 /var/www/html/wp-content
@@ -175,7 +175,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
             touch /var/www/html/wp-content/uploads/index.php
 
             if [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "true" ] || [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "on" ] || [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "1" ] ; then
-              echo "Enabling object redis cache"
+              echo "Enabling redis object cache"
               awk "/That's all, stop editing/ {
               print \"# eXtremeSHOK.com Redis Object Cache\"
               print \"define( 'WP_REDIS_CLIENT', 'predis' );\"
@@ -205,6 +205,13 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
 
             # cache and cdn
             if [ "$PHP_WORDPRESS_SUPER_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "true" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "on" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "1" ] ; then
+              echo "Enabling Super Cache"
+              awk "/That's all, stop editing/ {
+              print \"# eXtremeSHOK.com SUPER CACHE\"
+              print \"define('WP_CACHE', true);\"
+              print \"define('WPCACHEHOME', '/var/www/cache/');\"
+              }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
+              mkdir -p /var/www/cache/
               /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-super-cache
             elif [ "$PHP_WORDPRESS_NGINX_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_NGINX_CACHE" == "true" ] || [ "$PHP_WORDPRESS_NGINX_CACHE" == "on" ] || [ "$PHP_WORDPRESS_NGINX_CACHE" == "1" ] ; then
              /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate nginx-helper
