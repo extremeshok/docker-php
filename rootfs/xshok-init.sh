@@ -50,7 +50,13 @@ export PHP_MAX_TIME="${PHP_MAX_TIME%S}"
 
 PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-256}
 PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%M}"
-export PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%m}"
+PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%m}"
+
+if [[ $PHP_MEMORY_LIMIT -lt 64 ]] ; then
+  echo "WARNING: PHP_MEMORY_LIMIT if ${PHP_MEMORY_LIMIT} too low, setting to 64"
+  PHP_MEMORY_LIMIT=64
+fi
+export PHP_MEMORY_LIMIT
 
 ## Install extra php-extensions
 if [ ! -z "$PHP_EXTRA_EXTENSIONS" ] ; then
@@ -146,7 +152,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
     echo "Download / Configure / Install Wordpress"
     if ! /usr/local/bin/wp-cli --allow-root --path=/var/www/html core is-installed > /dev/null ; then
       if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download  > /dev/null ; then
-        if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname=$PHP_WORDPRESS_DATABASE --dbuser=$PHP_WORDPRESS_DATABASE_USER --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost=$PHP_WORDPRESS_DATABASE_HOST --dbport=$PHP_WORDPRESS_DATABASE_PORT --dbprefix=$PHP_WORDPRESS_DATABASE_PREFIX --dbcharset=$PHP_WORDPRESS_DATABASE_CHARSET --dbcollate=$PHP_WORDPRESS_DATABASE_COLLATE --locale=$PHP_WORDPRESS_LOCALE  >> /var/www/wordpress.log ; then
+        if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname=$PHP_WORDPRESS_DATABASE --dbuser=$PHP_WORDPRESS_DATABASE_USER --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost=$PHP_WORDPRESS_DATABASE_HOST:$PHP_WORDPRESS_DATABASE_PORT --dbprefix=$PHP_WORDPRESS_DATABASE_PREFIX --dbcharset=$PHP_WORDPRESS_DATABASE_CHARSET --dbcollate=$PHP_WORDPRESS_DATABASE_COLLATE --locale=$PHP_WORDPRESS_LOCALE  >> /var/www/wordpress.log ; then
           if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "no" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] ; then
             this_skip_email="--skip-email"
           else
@@ -164,10 +170,40 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
             # change permalinks out of the box
             /usr/local/bin/wp-cli --allow-root --path=/var/www/html rewrite structure '/%post_id%/%postname%/'
 
-            # Disallow file editing
+            # Memory optimising
+            if [[ $PHP_MEMORY_LIMIT -lt 128 ]] ; then
+              WP_MEMORY_LIMIT=$((PHP_MEMORY_LIMIT/2 +16))
+              WP_MAX_MEMORY_LIMIT=$PHP_MEMORY_LIMIT
+            else
+              WP_MEMORY_LIMIT=$((PHP_MEMORY_LIMIT/2))
+              WP_MAX_MEMORY_LIMIT=$PHP_MEMORY_LIMIT
+            fi
+            export WP_MEMORY_LIMIT
+            export WP_MAX_MEMORY_LIMIT
+            
             awk "/That's all, stop editing/ {
-            print \"# eXtremeSHOK.com Prevent file editing\"
+            print \"# eXtremeSHOK.com Optimisation\"
+            print \"# Reduce the number of database calls when loading your site\"
+            print \"define( 'WP_SITEURL', 'https://' . \$_SERVER['SERVER_NAME'] .'' );\"
+            print \"define( 'WP_HOME', 'https://' . \$_SERVER['SERVER_NAME'] .'' );\"
+            print \"# Memory Admin Area\"
+            print \"define( 'WP_MAX_MEMORY_LIMIT', '${WP_MAX_MEMORY_LIMIT}M' );\"
+            print \"# Memory Client Area\"
+            print \"define( 'WP_MEMORY_LIMIT', '${WP_MEMORY_LIMIT}M' );\"
+            print \"# Enforce File Permissions\"
+            print \"define( 'FS_CHMOD_DIR', ( 0755 & ~ umask() ) );\"
+            print \"define( 'FS_CHMOD_FILE', ( 0644 & ~ umask() ) );\"
+            print \"define( 'FS_METHOD', 'direct' );\"
+            print \"define( 'WP_CRON_LOCK_TIMEOUT', 60 );\"
+            print \"# Security\"
             print \"define('DISALLOW_FILE_EDIT', true);\"
+            print \"define( 'FORCE_SSL_ADMIN', true );\"
+            print \"define( 'DISALLOW_UNFILTERED_HTML', true );\"
+            print \"# Recommended Options\"
+            print \"define('EMPTY_TRASH_DAYS', 30);\"
+            print \"define( 'WP_POST_REVISIONS', 5 );\"
+            print \"define( 'AUTOSAVE_INTERVAL', 90 );\"
+            print \"\"
             }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
 
             chmod 0755 /var/www/html/wp-content
@@ -194,6 +230,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
               print \"#define( 'WP_REDIS_GLOBAL_GROUPS', '['blog-details', 'blog-id-cache', 'blog-lookup', 'global-posts', 'networks', 'rss', 'sites', 'site-details', 'site-lookup', 'site-options', 'site-transient', 'users', 'useremail', 'userlogins', 'usermeta', 'user_meta', 'userslugs']' );\"
               print \"#define( 'WP_REDIS_IGNORED_GROUPS', '['counts', 'plugins']' );\"
               print \"#define( 'WP_REDIS_DISABLED', 'true' );\"
+              print \"\"
               }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
               /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate redis-cache
             fi
@@ -217,6 +254,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
               print \"# eXtremeSHOK.com SUPER CACHE\"
               print \"define('WP_CACHE', true);\"
               print \"define('WPCACHEHOME', '/var/www/cache/');\"
+              print \"\"
               }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
               mkdir -p /var/www/cache/
               /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-super-cache
