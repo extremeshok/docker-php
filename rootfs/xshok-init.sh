@@ -263,7 +263,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
           awk "/That's all, stop editing/ {
           print \"# eXtremeSHOK.com SUPER CACHE\"
           print \"define('WP_CACHE', true);\"
-          print \"define('WPCACHEHOME', '/var/www/cache/');\"
+          print \"#define('WPCACHEHOME', '/var/www/cache/');\"
           print \"\"
           }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
           mkdir -p /var/www/cache/
