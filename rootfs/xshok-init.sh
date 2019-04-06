@@ -141,8 +141,8 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
   # ensure wp-cli is updated
 
   if [ "$XS_WORDPRESS_DATABASE" != "" ] && [ "$XS_WORDPRESS_DATABASE_USER" != "" ] && [ "$XS_WORDPRESS_DATABASE_PASSWORD" != "" ] && [ "$XS_WORDPRESS_URL" != "" ] && [ "$XS_WORDPRESS_ADMIN_EMAIL" != "" ] ; then
-    if [ "$XS_WORDPRESS_SKIP_EMAIL" != "no" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "false" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "off" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "0" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" == "" ]; then
-      echo "ERROR: XS_WORDPRESS_SKIP_EMAIL enabled, XS_WORDPRESS_ADMIN_PASSWORD can NOT be empty "
+    if [ "$XS_WORDPRESS_ADMIN_EMAIL" == "" ] || [ "$XS_WORDPRESS_ADMIN_USER" == "" ] ; then
+      echo "ERORR: Missing PHP_WORDPRESS_ADMIN_EMAIL and/or PHP_WORDPRESS_ADMIN_USER"
       sleep 1d
       exit 1
     fi
@@ -178,8 +178,17 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
     echo "locale=$XS_WORDPRESS_LOCALE"
     echo "DEBUG ======================="
 
-
     if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$XS_WORDPRESS_DATABASE" --dbuser="$XS_WORDPRESS_DATABASE_USER" --dbpass="$XS_WORDPRESS_DATABASE_PASSWORD" --dbhost="$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT" --dbprefix="$XS_WORDPRESS_DATABASE_PREFIX" --dbcharset="$XS_WORDPRESS_DATABASE_CHARSET" --dbcollate="$XS_WORDPRESS_DATABASE_COLLATE" --locale="$XS_WORDPRESS_LOCALE" ; then
+      if [ "$XS_WORDPRESS_ADMIN_PASSWORD" == "" ] ; then
+        this_admin_password="$(/dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
+        echo "*** Admin Password Generated, saved to: /var/www/html/.xs_password"
+        echo "$this_admin_password" > /var/www/html/.xs_password
+        chmod 0600 /var/www/html/.xs_password
+        this_admin_password="--admin_password=${this_admin_password}"
+      else
+        this_admin_password="--admin_password=${XS_WORDPRESS_ADMIN_PASSWORD}"
+      fi
+
       if [ "$XS_WORDPRESS_SKIP_EMAIL" == "yes" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "true" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "on" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "1" ] ; then
         this_skip_email="--skip-email"
       else
@@ -191,26 +200,17 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
       echo "title=$XS_WORDPRESS_TITLE"
       echo "admin_user=$XS_WORDPRESS_ADMIN_USER"
       echo "admin_password=$XS_WORDPRESS_ADMIN_PASSWORD"
+      echo "this_admin_password=$XS_WORDPRESS_ADMIN_PASSWORD"
       echo "admin_email=$XS_WORDPRESS_ADMIN_EMAIL"
       echo "this_skip_email=$this_skip_email"
       echo "DEBUG ======================="
 
-if [ "$XS_WORDPRESS_ADMIN_EMAIL" == "" ] || [ "$XS_WORDPRESS_ADMIN_USER" == "" ] ; then
-  echo "ERORR: Missing PHP_WORDPRESS_ADMIN_EMAIL and/or PHP_WORDPRESS_ADMIN_USER"
-  rm -f /var/www/html/wp-config.php
-  sleep 1d
-  exit 1
-fi
-
-
-      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$XS_WORDPRESS_URL" --title="$XS_WORDPRESS_TITLE" --admin_user="$XS_WORDPRESS_ADMIN_USER" --admin_password="$XS_WORDPRESS_ADMIN_PASSWORD" --admin_email="$XS_WORDPRESS_ADMIN_EMAIL" $this_skip_email >> /tmp/wordpress.log ; then
+      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$XS_WORDPRESS_URL" --title="$XS_WORDPRESS_TITLE" --admin_user="$XS_WORDPRESS_ADMIN_USER" --admin_email="$XS_WORDPRESS_ADMIN_EMAIL" $this_admin_password  $this_skip_email >> /tmp/wordpress.log ; then
 
         # save admin password if it was generated to /var/www/html/.xs_password
         this_admin_password="$(grep "Admin password" /tmp/wordpress.log)"
         if [ "$this_admin_password" != "" ] && [ ! -f "/var/www/html/.xs_password" ]; then
-          echo "*** Admin Password Generated, saved to: /var/www/html/.xs_password"
-          echo "$this_admin_password" > /var/www/html/.xs_password
-          chmod 0600 /var/www/html/.xs_password
+
         fi
 
         # change admin userid from 1 to a random 6 digit number
