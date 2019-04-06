@@ -74,9 +74,11 @@ if [ ! -z "$PHP_EXTRA_EXTENSIONS" ] ; then
 fi
 
 ## Configure Remote SMTP config
-if [ -d "/etc/" ] && [ -w "/etc/" ] && [ -d "/etc/nginx/conf.d" ] && [ -w "/etc/nginx/conf.d" ] ; then
+if [ -d "/etc/" ] && [ -w "/etc/" ] && [ -d "/etc/php7/conf.d/" ] && [ -w "/etc/php7/conf.d/" ] ; then
+
   if [ ! -z "$PHP_SMTP_HOST" ] && [ ! -z "$PHP_SMTP_USER" ] && [ ! -z "$PHP_SMTP_PASSWORD" ] ; then
     echo "Installing remote smtp (msmtp)"
+
     cat << EOF >> /etc/msmtprc
 defaults
 port ${PHP_SMTP_PORT}
