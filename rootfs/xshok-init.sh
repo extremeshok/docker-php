@@ -153,7 +153,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
       sleep 2
     done
 
-    if [ "$XS_WORDPRESS_DATABASE_PREFIX" != "" ] ; then
+    if [ "$XS_WORDPRESS_DATABASE_PREFIX" == "" ] ; then
       XS_WORDPRESS_DATABASE_PREFIX="$(echo $RANDOM)_"
     fi
 
@@ -185,6 +185,16 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
       else
         this_skip_email=""
       fi
+
+      echo "DEBUG ======================="
+      echo "url=$XS_WORDPRESS_URL"
+      echo "title=$XS_WORDPRESS_TITLE"
+      echo "admin_user=$XS_WORDPRESS_ADMIN_USER"
+      echo "admin_password=$XS_WORDPRESS_ADMIN_PASSWORD"
+      echo "admin_email=$XS_WORDPRESS_ADMIN_EMAIL"
+      echo "this_skip_email=$this_skip_email"
+      echo "DEBUG ======================="
+
       if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$XS_WORDPRESS_URL" --title="$XS_WORDPRESS_TITLE" --admin_user="$XS_WORDPRESS_ADMIN_USER" --admin_password="$XS_WORDPRESS_ADMIN_PASSWORD" --admin_email="$XS_WORDPRESS_ADMIN_EMAIL" $this_skip_email >> /tmp/wordpress.log ; then
 
         # save admin password if it was generated to /var/www/html/.xs_password
