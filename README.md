@@ -58,8 +58,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_WORDPRESS_TITLE=PHP_WORDPRESS_URL
 * PHP_WORDPRESS_ADMIN_EMAIL=
 * PHP_WORDPRESS_ADMIN_USER=PHP_WORDPRESS_ADMIN_EMAIL
-* PHP_WORDPRESS_ADMIN_PASSWORD= (blank wp will generate a password and email as long as PHP_WORDPRESS_SKIP_EMAIL is false)
-* PHP_WORDPRESS_SKIP_EMAIL=false
+* PHP_WORDPRESS_ADMIN_PASSWORD= (if blank will generate a password)
 * PHP_WORDPRESS_UPDATE=yes
 * PHP_WORDPRESS_SUPER_CACHE=yes
 * PHP_WORDPRESS_NGINX_CACHE=no
