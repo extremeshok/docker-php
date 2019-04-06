@@ -76,6 +76,7 @@ fi
 ## Configure Remote SMTP config
 if [ -d "/etc/" ] && [ -w "/etc/" ] && [ -d "/etc/nginx/conf.d" ] && [ -w "/etc/nginx/conf.d" ] ; then
   if [ ! -z "$PHP_SMTP_HOST" ] && [ ! -z "$PHP_SMTP_USER" ] && [ ! -z "$PHP_SMTP_PASSWORD" ] ; then
+    echo "Installing remote smtp (msmtp)"
     cat << EOF >> /etc/msmtprc
 defaults
 port ${PHP_SMTP_PORT}
@@ -196,7 +197,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
         print \"# eXtremeSHOK.com Optimisation\"
         print \"# Reduce the number of database calls when loading your site\"
         # shellcheck disable=SC1087
-        print \"if (\!empty($_SERVER['SERVER_NAME'])) { \"
+        print \"if (\!empty(\$_SERVER['SERVER_NAME'])) { \"
         print \"define( 'WP_SITEURL', 'https://' . \$_SERVER['SERVER_NAME'] .'' );\"
         print \"define( 'WP_HOME', 'https://' . \$_SERVER['SERVER_NAME'] .'' );\"
         print \"}\"
