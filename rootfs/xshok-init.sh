@@ -207,12 +207,6 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
 
       if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$XS_WORDPRESS_URL" --title="$XS_WORDPRESS_TITLE" --admin_user="$XS_WORDPRESS_ADMIN_USER" --admin_email="$XS_WORDPRESS_ADMIN_EMAIL" $this_admin_password  $this_skip_email >> /tmp/wordpress.log ; then
 
-        # save admin password if it was generated to /var/www/html/.xs_password
-        this_admin_password="$(grep "Admin password" /tmp/wordpress.log)"
-        if [ "$this_admin_password" != "" ] && [ ! -f "/var/www/html/.xs_password" ]; then
-
-        fi
-
         # change admin userid from 1 to a random 6 digit number
         WPUID="$(echo $RANDOM$RANDOM |cut -c1-6)"
         echo "Setting Admin ID from 1 to ${WPUID}"
