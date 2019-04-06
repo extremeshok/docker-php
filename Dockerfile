@@ -18,6 +18,7 @@ RUN echo  "**** Install php and some extensions ****" \
   php7-ctype@php \
   php7-curl@php \
   php7-dom@php \
+  php7-exif@php \
   php7-gd@php \
   php7-iconv@php \
   php7-imagick@php \

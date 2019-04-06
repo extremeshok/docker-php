@@ -337,6 +337,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
 
         # SEO
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wordpress-seo
+        #/usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate all-in-one-seo-pack
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate google-sitemap-generator
 
         # Debug

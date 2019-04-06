@@ -113,6 +113,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * ctype
 * curl
 * dom
+* exif
 * gd
 * iconv
 * imagick
