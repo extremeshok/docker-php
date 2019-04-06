@@ -37,10 +37,10 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_CHOWN=true (set to false to disable)
 
 # EXTERNAL SMTP
-* SMTP_HOST=
-* SMTP_PORT=587
-* SMTP_USER=
-* SMTP_PASS=
+* PHP_SMTP_HOST=
+* PHP_SMTP_PORT=587
+* PHP_SMTP_USER=
+* PHP_SMTP_PASS=
 
 # WORDPRESS
 * PHP_WORDPRESS=false (set to true to have the WP_cli installed)

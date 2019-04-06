@@ -12,8 +12,12 @@ export PHP_REDIS_HOST=${PHP_REDIS_HOST:-redis}
 export PHP_REDIS_PORT=${PHP_REDIS_PORT:-6379}
 export PHP_TIMEZONE=${PHP_TIMEZONE:-UTC}
 export PHP_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
-
 export PHP_CHOWN=${PHP_CHOWN:-yes}
+
+export PHP_SMTP_HOST=${PHP_SMTP_HOST:-}
+export PHP_SMTP_PORT=${PHP_SMTP_PORT:-587}
+export PHP_SMTP_USER=${PHP_SMTP_USER:-}
+export PHP_SMTP_PASSWORD=${PHP_SMTP_PASSWORD:-}
 
 export PHP_WORDPRESS=${PHP_WORDPRESS:-no}
 export PHP_WORDPRESS_REDIS_OBJECT_CACHE=${PHP_WORDPRESS_REDIS_OBJECT_CACHE:-no}
@@ -71,20 +75,20 @@ fi
 
 ## Configure Remote SMTP config
 if [ -d "/etc/" ] && [ -w "/etc/" ] && [ -d "/etc/nginx/conf.d" ] && [ -w "/etc/nginx/conf.d" ] ; then
-  if [ ! -z "$SMTP_HOST" ] && [ ! -z "$SMTP_USER" ] && [ ! -z "$SMTP_PASS" ] ; then
+  if [ ! -z "$PHP_SMTP_HOST" ] && [ ! -z "$PHP_SMTP_USER" ] && [ ! -z "$PHP_SMTP_PASSWORD" ] ; then
     cat << EOF >> /etc/msmtprc
 defaults
-port ${SMTP_PORT:-587}
+port ${PHP_SMTP_PORT}
 tls on
 tls_trust_file /etc/ssl/certs/ca-certificates.crt
 tls_certcheck off
 
 account remote
-host ${SMTP_HOST}
-from ${SMTP_USER}
+host ${PHP_SMTP_HOST}
+from ${PHP_SMTP_USER}
 auth on
-user ${SMTP_USER}
-password ${SMTP_PASS}
+user ${PHP_SMTP_USER}
+password ${PHP_SMTP_PASSWORD}
 
 account default : remote
 
