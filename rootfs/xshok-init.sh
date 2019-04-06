@@ -206,7 +206,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
       echo "title=$XS_WORDPRESS_TITLE"
       echo "admin_user=$XS_WORDPRESS_ADMIN_USER"
       echo "admin_password=$XS_WORDPRESS_ADMIN_PASSWORD"
-      echo "this_admin_password=$XS_WORDPRESS_ADMIN_PASSWORD"
+      echo "this_admin_password=$this_admin_password"
       echo "admin_email=$XS_WORDPRESS_ADMIN_EMAIL"
       echo "this_skip_email=$this_skip_email"
       echo "DEBUG ======================="
