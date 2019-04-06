@@ -151,47 +151,55 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
       sleep 2
     done
 
-    if [ "$XS_WORDPRESS_DATABASE_PREFIX" == "" ] ; then
-      XS_WORDPRESS_DATABASE_PREFIX="$(echo $RANDOM)_"
-    fi
+    # if [ -f /var/www/html/wp-config.php ]; then
+    #   my_users_table="$(grep "table_prefix = " /var/www/html/wp-config.php | cut -f2 -d"'" | xargs)users"
+    #   # validate the users table
+    #   if ! mysql --host "$XS_WORDPRESS_DATABASE_HOST" --port "$XS_WORDPRESS_DATABASE_PORT" -u"$XS_WORDPRESS_DATABASE_USER" -p"$XS_WORDPRESS_DATABASE_PASSWORD" --database="$XS_WORDPRESS_DATABASE" --silent -e "SELECT * FROM ${my_users_table} LIMIT 1;" > /dev/null ; then
+    #     echo "Database not configured, re-running installation"
+    #     rm -f /var/www/html/wp-config.php
+    #   fi
+    # fi
 
-    echo "Download / Configure / Install Wordpress"
     if [ ! -f /var/www/html/wp-config.php ]; then
+      echo "Download / Configure / Install Wordpress"
 
      if ! /usr/local/bin/wp-cli --allow-root --path=/var/www/html core is-installed > /dev/null ; then
        /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download > /dev/null
      fi
      if [ ! -f /var/www/html/wp-settings.php ]; then
        /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download > /dev/null
-    fi
+     fi
+     if [ "$XS_WORDPRESS_DATABASE_PREFIX" == "" ] ; then
+       XS_WORDPRESS_DATABASE_PREFIX="$(echo $RANDOM)_"
+     fi
 
-    echo "DEBUG ======================="
-    echo "dbname=$XS_WORDPRESS_DATABASE"
-    echo "dbuser=$XS_WORDPRESS_DATABASE_USER"
-    echo "dbpass=$XS_WORDPRESS_DATABASE_PASSWORD"
-    echo "dbhost=$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT"
-    echo "dbprefix=$XS_WORDPRESS_DATABASE_PREFIX"
-    echo "dbcharset=$XS_WORDPRESS_DATABASE_CHARSET"
-    echo "dbcollate=$XS_WORDPRESS_DATABASE_COLLATE"
-    echo "locale=$XS_WORDPRESS_LOCALE"
-    echo "DEBUG ======================="
+      echo "DEBUG ======================="
+      echo "dbname=$XS_WORDPRESS_DATABASE"
+      echo "dbuser=$XS_WORDPRESS_DATABASE_USER"
+      echo "dbpass=$XS_WORDPRESS_DATABASE_PASSWORD"
+      echo "dbhost=$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT"
+      echo "dbprefix=$XS_WORDPRESS_DATABASE_PREFIX"
+      echo "dbcharset=$XS_WORDPRESS_DATABASE_CHARSET"
+      echo "dbcollate=$XS_WORDPRESS_DATABASE_COLLATE"
+      echo "locale=$XS_WORDPRESS_LOCALE"
+      echo "DEBUG ======================="
 
-    if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$XS_WORDPRESS_DATABASE" --dbuser="$XS_WORDPRESS_DATABASE_USER" --dbpass="$XS_WORDPRESS_DATABASE_PASSWORD" --dbhost="$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT" --dbprefix="$XS_WORDPRESS_DATABASE_PREFIX" --dbcharset="$XS_WORDPRESS_DATABASE_CHARSET" --dbcollate="$XS_WORDPRESS_DATABASE_COLLATE" --locale="$XS_WORDPRESS_LOCALE" ; then
-      if [ "$XS_WORDPRESS_ADMIN_PASSWORD" == "" ] ; then
-        this_admin_password="$(date +%s | sha256sum | base64 | head -c 32 ; echo)"
-        echo "*** Admin Password Generated, saved to: /var/www/html/.xs_password"
-        echo "$this_admin_password" > /var/www/html/.xs_password
-        chmod 0600 /var/www/html/.xs_password
-        this_admin_password="--admin_password=${this_admin_password}"
-      else
-        this_admin_password="--admin_password=${XS_WORDPRESS_ADMIN_PASSWORD}"
-      fi
+      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$XS_WORDPRESS_DATABASE" --dbuser="$XS_WORDPRESS_DATABASE_USER" --dbpass="$XS_WORDPRESS_DATABASE_PASSWORD" --dbhost="$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT" --dbprefix="$XS_WORDPRESS_DATABASE_PREFIX" --dbcharset="$XS_WORDPRESS_DATABASE_CHARSET" --dbcollate="$XS_WORDPRESS_DATABASE_COLLATE" --locale="$XS_WORDPRESS_LOCALE" ; then
+        if [ "$XS_WORDPRESS_ADMIN_PASSWORD" == "" ] ; then
+          this_admin_password="$(date +%s | sha256sum | base64 | head -c 32 ; echo)"
+          echo "*** Admin Password Generated, saved to: /var/www/html/.xs_password"
+          echo "$this_admin_password" > /var/www/html/.xs_password
+          chmod 0600 /var/www/html/.xs_password
+          this_admin_password="--admin_password=${this_admin_password}"
+        else
+          this_admin_password="--admin_password=${XS_WORDPRESS_ADMIN_PASSWORD}"
+        fi
 
-      if [ "$XS_WORDPRESS_SKIP_EMAIL" == "yes" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "true" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "on" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "1" ] ; then
-        this_skip_email="--skip-email"
-      else
-        this_skip_email=""
-      fi
+        if [ "$XS_WORDPRESS_SKIP_EMAIL" == "yes" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "true" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "on" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "1" ] ; then
+          this_skip_email="--skip-email"
+        else
+          this_skip_email=""
+        fi
 
       echo "DEBUG ======================="
       echo "url=$XS_WORDPRESS_URL"
