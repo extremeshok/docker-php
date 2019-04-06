@@ -173,16 +173,16 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
        XS_WORDPRESS_DATABASE_PREFIX="$(echo $RANDOM)_"
      fi
 
-      echo "DEBUG ======================="
-      echo "dbname=$XS_WORDPRESS_DATABASE"
-      echo "dbuser=$XS_WORDPRESS_DATABASE_USER"
-      echo "dbpass=$XS_WORDPRESS_DATABASE_PASSWORD"
-      echo "dbhost=$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT"
-      echo "dbprefix=$XS_WORDPRESS_DATABASE_PREFIX"
-      echo "dbcharset=$XS_WORDPRESS_DATABASE_CHARSET"
-      echo "dbcollate=$XS_WORDPRESS_DATABASE_COLLATE"
-      echo "locale=$XS_WORDPRESS_LOCALE"
-      echo "DEBUG ======================="
+      # echo "DEBUG ======================="
+      # echo "dbname=$XS_WORDPRESS_DATABASE"
+      # echo "dbuser=$XS_WORDPRESS_DATABASE_USER"
+      # echo "dbpass=$XS_WORDPRESS_DATABASE_PASSWORD"
+      # echo "dbhost=$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT"
+      # echo "dbprefix=$XS_WORDPRESS_DATABASE_PREFIX"
+      # echo "dbcharset=$XS_WORDPRESS_DATABASE_CHARSET"
+      # echo "dbcollate=$XS_WORDPRESS_DATABASE_COLLATE"
+      # echo "locale=$XS_WORDPRESS_LOCALE"
+      # echo "DEBUG ======================="
 
       if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$XS_WORDPRESS_DATABASE" --dbuser="$XS_WORDPRESS_DATABASE_USER" --dbpass="$XS_WORDPRESS_DATABASE_PASSWORD" --dbhost="$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT" --dbprefix="$XS_WORDPRESS_DATABASE_PREFIX" --dbcharset="$XS_WORDPRESS_DATABASE_CHARSET" --dbcollate="$XS_WORDPRESS_DATABASE_COLLATE" --locale="$XS_WORDPRESS_LOCALE" ; then
         if [ "$XS_WORDPRESS_ADMIN_PASSWORD" == "" ] ; then
@@ -201,15 +201,15 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
           this_skip_email=""
         fi
 
-      echo "DEBUG ======================="
-      echo "url=$XS_WORDPRESS_URL"
-      echo "title=$XS_WORDPRESS_TITLE"
-      echo "admin_user=$XS_WORDPRESS_ADMIN_USER"
-      echo "admin_password=$XS_WORDPRESS_ADMIN_PASSWORD"
-      echo "this_admin_password=$this_admin_password"
-      echo "admin_email=$XS_WORDPRESS_ADMIN_EMAIL"
-      echo "this_skip_email=$this_skip_email"
-      echo "DEBUG ======================="
+      # echo "DEBUG ======================="
+      # echo "url=$XS_WORDPRESS_URL"
+      # echo "title=$XS_WORDPRESS_TITLE"
+      # echo "admin_user=$XS_WORDPRESS_ADMIN_USER"
+      # echo "admin_password=$XS_WORDPRESS_ADMIN_PASSWORD"
+      # echo "this_admin_password=$this_admin_password"
+      # echo "admin_email=$XS_WORDPRESS_ADMIN_EMAIL"
+      # echo "this_skip_email=$this_skip_email"
+      # echo "DEBUG ======================="
 
       if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$XS_WORDPRESS_URL" --title="$XS_WORDPRESS_TITLE" --admin_user="$XS_WORDPRESS_ADMIN_USER" --admin_email="$XS_WORDPRESS_ADMIN_EMAIL" $this_admin_password  $this_skip_email >> /tmp/wordpress.log ; then
 
