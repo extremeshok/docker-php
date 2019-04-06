@@ -83,7 +83,7 @@ if [ -d "/etc/" ] && [ -w "/etc/" ] && [ -d "/etc/php7/conf.d/" ] && [ -w "/etc/
 defaults
 port ${PHP_SMTP_PORT}
 tls on
-tls_trust_file /etc/ssl/certs/ca-certificates.crt
+tls_starttls on
 tls_certcheck off
 
 account remote
@@ -160,19 +160,27 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
     if [ ! -f /var/www/html/wp-config.php ]; then
 
      if ! /usr/local/bin/wp-cli --allow-root --path=/var/www/html core is-installed > /dev/null ; then
-       /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download  > /dev/null
+       /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download > /dev/null
      fi
      if [ ! -f /var/www/html/wp-settings.php ]; then
-       /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download  > /dev/null
+       /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download > /dev/null
     fi
 
-    if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname=$PHP_WORDPRESS_DATABASE --dbuser=$PHP_WORDPRESS_DATABASE_USER --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost=$PHP_WORDPRESS_DATABASE_HOST:$PHP_WORDPRESS_DATABASE_PORT --dbprefix=$PHP_WORDPRESS_DATABASE_PREFIX --dbcharset=$PHP_WORDPRESS_DATABASE_CHARSET --dbcollate=$PHP_WORDPRESS_DATABASE_COLLATE --locale=$PHP_WORDPRESS_LOCALE  >> /var/www/wordpress.log ; then
-      if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "no" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] ; then
+    if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname=$PHP_WORDPRESS_DATABASE --dbuser=$PHP_WORDPRESS_DATABASE_USER --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost=$PHP_WORDPRESS_DATABASE_HOST:$PHP_WORDPRESS_DATABASE_PORT --dbprefix=$PHP_WORDPRESS_DATABASE_PREFIX --dbcharset=$PHP_WORDPRESS_DATABASE_CHARSET --dbcollate=$PHP_WORDPRESS_DATABASE_COLLATE --locale=$PHP_WORDPRESS_LOCALE ; then
+      if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "yes" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" == "true" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" == "on" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" == "1" ] ; then
         this_skip_email="--skip-email"
       else
         this_skip_email=""
       fi
-      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url=$PHP_WORDPRESS_URL --title="$PHP_WORDPRESS_TITLE" --admin_user=$PHP_WORDPRESS_ADMIN_USER --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email=$PHP_WORDPRESS_ADMIN_EMAIL $this_skip_email >> /var/www/wordpress.log ; then
+      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url=$PHP_WORDPRESS_URL --title="$PHP_WORDPRESS_TITLE" --admin_user=$PHP_WORDPRESS_ADMIN_USER --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email=$PHP_WORDPRESS_ADMIN_EMAIL $this_skip_email >> /tmp/wordpress.log ; then
+
+        # save admin password if it was generated to /var/www/html/.xs_password
+        this_admin_password="$(grep "Admin password" /tmp/wordpress.log)"
+        if [ ! -z "$this_admin_password" ] && [ ! -f "/var/www/html/.xs_password" ]; then
+          echo "*** Admin Password Generated, saved to: /var/www/html/.xs_password"
+          echo "$this_admin_password" > /var/www/html/.xs_password
+          chmod 0600 /var/www/html/.xs_password
+        fi
 
         # change admin userid from 1 to a random 6 digit number
         WPUID="$(echo $RANDOM$RANDOM |cut -c1-6)"

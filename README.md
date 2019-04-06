@@ -69,6 +69,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * To install wordpress, required: PHP_WORDPRESS_DATABASE, PHP_WORDPRESS_DATABASE_USER, PHP_WORDPRESS_DATABASE_PASSWORD, PHP_WORDPRESS_URL, PHP_WORDPRESS_ADMIN_EMAIL
 * shell alias wp = wp-cli --allow-root --path=/var/www/html
 * allow interactive bash shell for nobody user with the command "su-nobody"
+* save admin password if it was generated to /var/www/html/.xs_password
 
 # Wordpress extensions
 * amp
