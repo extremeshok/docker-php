@@ -178,7 +178,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
 
     if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$XS_WORDPRESS_DATABASE" --dbuser="$XS_WORDPRESS_DATABASE_USER" --dbpass="$XS_WORDPRESS_DATABASE_PASSWORD" --dbhost="$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT" --dbprefix="$XS_WORDPRESS_DATABASE_PREFIX" --dbcharset="$XS_WORDPRESS_DATABASE_CHARSET" --dbcollate="$XS_WORDPRESS_DATABASE_COLLATE" --locale="$XS_WORDPRESS_LOCALE" ; then
       if [ "$XS_WORDPRESS_ADMIN_PASSWORD" == "" ] ; then
-        this_admin_password="$(tr -dc '[:alnum:]' < /dev/urandom | fold -w32 | head -n1)"
+        this_admin_password="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
         echo "*** Admin Password Generated, saved to: /var/www/html/.xs_password"
         echo "$this_admin_password" > /var/www/html/.xs_password
         chmod 0600 /var/www/html/.xs_password
