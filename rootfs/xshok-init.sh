@@ -192,7 +192,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
         print \"# eXtremeSHOK.com Optimisation\"
         print \"# Reduce the number of database calls when loading your site\"
         # shellcheck disable=SC1087
-        print \"if (!empty($_SERVER['SERVER_NAME'])) { \"
+        print \"if (\!empty($_SERVER['SERVER_NAME'])) { \"
         print \"define( 'WP_SITEURL', 'https://' . \$_SERVER['SERVER_NAME'] .'' );\"
         print \"define( 'WP_HOME', 'https://' . \$_SERVER['SERVER_NAME'] .'' );\"
         print \"}\"
