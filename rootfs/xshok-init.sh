@@ -64,7 +64,7 @@ fi
 #XS_MEMORY_LIMIT
 
 ## Install extra php-extensions
-if [ ! -z "$XS_EXTRA_EXTENSIONS" ] ; then
+if [ "$XS_EXTRA_EXTENSIONS" != "" ] ; then
   for extension in ${XS_EXTRA_EXTENSIONS//,/ } ; do
     extension="${extension#php7-}"
     extension=${extension#php-}
@@ -77,7 +77,7 @@ fi
 ## Configure Remote SMTP config
 if [ -d "/etc/" ] && [ -w "/etc/" ] && [ -d "/etc/php7/conf.d/" ] && [ -w "/etc/php7/conf.d/" ] ; then
 
-  if [ ! -z "$XS_SMTP_HOST" ] && [ ! -z "$XS_SMTP_USER" ] && [ ! -z "$XS_SMTP_PASSWORD" ] ; then
+  if [ "$XS_SMTP_HOST" != "" ] && [ "$XS_SMTP_USER" != "" ] && [ "$XS_SMTP_PASSWORD" != "" ] ; then
     echo "Installing remote smtp (msmtp)"
 
     cat << EOF >> /etc/msmtprc
@@ -140,8 +140,8 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
   fi
   # ensure wp-cli is updated
 
-  if [ ! -z "$XS_WORDPRESS_DATABASE" ] && [ ! -z "$XS_WORDPRESS_DATABASE_USER" ] && [ ! -z "$XS_WORDPRESS_DATABASE_PASSWORD" ] && [ ! -z "$XS_WORDPRESS_URL" ] && [ ! -z "$XS_WORDPRESS_ADMIN_EMAIL" ] ; then
-    if [ "$XS_WORDPRESS_SKIP_EMAIL" != "no" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "false" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "off" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "0" ] && [ -z "$XS_WORDPRESS_SKIP_EMAIL" ]; then
+  if [ "$XS_WORDPRESS_DATABASE" != "" ] && [ "$XS_WORDPRESS_DATABASE_USER" != "" ] && [ "$XS_WORDPRESS_DATABASE_PASSWORD" != "" ] && [ "$XS_WORDPRESS_URL" != "" ] && [ "$XS_WORDPRESS_ADMIN_EMAIL" != "" ] ; then
+    if [ "$XS_WORDPRESS_SKIP_EMAIL" != "no" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "false" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "off" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "0" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" == "" ]; then
       echo "ERROR: XS_WORDPRESS_SKIP_EMAIL enabled, XS_WORDPRESS_ADMIN_PASSWORD can NOT be empty "
       sleep 1d
       exit 1
@@ -153,7 +153,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
       sleep 2
     done
 
-    if [ -z "$XS_WORDPRESS_DATABASE_PREFIX" ] ; then
+    if [ "$XS_WORDPRESS_DATABASE_PREFIX" != "" ] ; then
       XS_WORDPRESS_DATABASE_PREFIX="$(echo $RANDOM)_"
     fi
 
@@ -177,7 +177,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
 
         # save admin password if it was generated to /var/www/html/.xs_password
         this_admin_password="$(grep "Admin password" /tmp/wordpress.log)"
-        if [ ! -z "$this_admin_password" ] && [ ! -f "/var/www/html/.xs_password" ]; then
+        if [ "$this_admin_password" != "" ] && [ ! -f "/var/www/html/.xs_password" ]; then
           echo "*** Admin Password Generated, saved to: /var/www/html/.xs_password"
           echo "$this_admin_password" > /var/www/html/.xs_password
           chmod 0600 /var/www/html/.xs_password
