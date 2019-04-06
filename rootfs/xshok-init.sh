@@ -304,13 +304,6 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate woocommerce
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate woo-gutenberg-products-block
 
-        # security
-        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate disable-xml-rpc-pingback
-        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate disable-emojis
-        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate two-factor
-        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate limit-login-attempts-reloaded
-        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate sucuri-scanner
-
         # SEO
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wordpress-seo
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate google-sitemap-generator
@@ -327,6 +320,13 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate heartbeat-control
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install rocket-lazy-load
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install lazy-load-for-videos
+
+        # security
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate disable-xml-rpc-pingback
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate disable-emojis
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate two-factor
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate limit-login-attempts-reloaded
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate sucuri-scanner
 
         echo "SUCCESS"
       fi
