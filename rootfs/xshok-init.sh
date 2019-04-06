@@ -166,13 +166,13 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
        /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download > /dev/null
     fi
 
-    if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname=$PHP_WORDPRESS_DATABASE --dbuser=$PHP_WORDPRESS_DATABASE_USER --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost=$PHP_WORDPRESS_DATABASE_HOST:$PHP_WORDPRESS_DATABASE_PORT --dbprefix=$PHP_WORDPRESS_DATABASE_PREFIX --dbcharset=$PHP_WORDPRESS_DATABASE_CHARSET --dbcollate=$PHP_WORDPRESS_DATABASE_COLLATE --locale=$PHP_WORDPRESS_LOCALE ; then
+    if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$PHP_WORDPRESS_DATABASE" --dbuser="$PHP_WORDPRESS_DATABASE_USER" --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost="$PHP_WORDPRESS_DATABASE_HOST:$PHP_WORDPRESS_DATABASE_PORT" --dbprefix="$PHP_WORDPRESS_DATABASE_PREFIX" --dbcharset="$PHP_WORDPRESS_DATABASE_CHARSET" --dbcollate="$PHP_WORDPRESS_DATABASE_COLLATE" --locale="$PHP_WORDPRESS_LOCALE" ; then
       if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "yes" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" == "true" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" == "on" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" == "1" ] ; then
         this_skip_email="--skip-email"
       else
         this_skip_email=""
       fi
-      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url=$PHP_WORDPRESS_URL --title="$PHP_WORDPRESS_TITLE" --admin_user=$PHP_WORDPRESS_ADMIN_USER --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email=$PHP_WORDPRESS_ADMIN_EMAIL $this_skip_email >> /tmp/wordpress.log ; then
+      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$PHP_WORDPRESS_URL" --title="$PHP_WORDPRESS_TITLE" --admin_user="$PHP_WORDPRESS_ADMIN_USER" --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email="$PHP_WORDPRESS_ADMIN_EMAIL" $this_skip_email >> /tmp/wordpress.log ; then
 
         # save admin password if it was generated to /var/www/html/.xs_password
         this_admin_password="$(grep "Admin password" /tmp/wordpress.log)"
@@ -184,12 +184,15 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
 
         # change admin userid from 1 to a random 6 digit number
         WPUID="$(echo $RANDOM$RANDOM |cut -c1-6)"
+        echo "Setting Admin ID from 1 to ${WPUID}"
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html db query "UPDATE ${PHP_WORDPRESS_DATABASE_PREFIX}users SET ID=${WPUID} WHERE ID=1; UPDATE ${PHP_WORDPRESS_DATABASE_PREFIX}usermeta SET user_id=${WPUID} WHERE user_id=1"
 
         # add index on autoload
+        echo "Creating Index on autoload"
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html db query "ALTER TABLE ${PHP_WORDPRESS_DATABASE_PREFIX}options ADD INDEX autoload_idx (autoload)"
 
         # change permalinks out of the box
+        echo "Setting permalinks to /%post_id%/%postname%/"
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html rewrite structure '/%post_id%/%postname%/'
 
         # Memory optimising
@@ -203,6 +206,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
         export WP_MEMORY_LIMIT
         export WP_MAX_MEMORY_LIMIT
 
+        echo "Optimising wordpress config"
         awk "/That's all, stop editing/ {
         print \"# eXtremeSHOK.com Optimisation\"
         print \"# Reduce the number of database calls when loading your site\"
@@ -331,6 +335,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
   fi
 
   if [ "$PHP_WORDPRESS_UPDATE" == "yes" ] || [ "$PHP_WORDPRESS_UPDATE" == "true" ] || [ "$PHP_WORDPRESS_UPDATE" == "on" ] || [ "$PHP_WORDPRESS_UPDATE" == "1" ] ; then
+    echo "Updating Wordpress"
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update-db
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all
