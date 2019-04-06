@@ -7,64 +7,65 @@
 ## enable case insensitve matching
 shopt -s nocaseglob
 
-export PHP_REDIS_SESSIONS=${PHP_REDIS_SESSIONS:-yes}
-export PHP_REDIS_HOST=${PHP_REDIS_HOST:-redis}
-export PHP_REDIS_PORT=${PHP_REDIS_PORT:-6379}
-export PHP_TIMEZONE=${PHP_TIMEZONE:-UTC}
-export PHP_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
-export PHP_CHOWN=${PHP_CHOWN:-yes}
+XS_REDIS_SESSIONS=${PHP_REDIS_SESSIONS:-yes}
+XS_REDIS_HOST=${PHP_REDIS_HOST:-redis}
+XS_REDIS_PORT=${PHP_REDIS_PORT:-6379}
+XS_TIMEZONE=${PHP_TIMEZONE:-UTC}
+XS_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
+XS_CHOWN=${PHP_CHOWN:-yes}
 
-export PHP_SMTP_HOST=${PHP_SMTP_HOST:-}
-export PHP_SMTP_PORT=${PHP_SMTP_PORT:-587}
-export PHP_SMTP_USER=${PHP_SMTP_USER:-}
-export PHP_SMTP_PASSWORD=${PHP_SMTP_PASSWORD:-}
+XS_SMTP_HOST=${PHP_SMTP_HOST:-}
+XS_SMTP_PORT=${PHP_SMTP_PORT:-587}
+XS_SMTP_USER=${PHP_SMTP_USER:-}
+XS_SMTP_PASSWORD=${PHP_SMTP_PASSWORD:-}
 
-export PHP_WORDPRESS=${PHP_WORDPRESS:-no}
-export PHP_WORDPRESS_REDIS_OBJECT_CACHE=${PHP_WORDPRESS_REDIS_OBJECT_CACHE:-no}
-export PHP_WORDPRESS_LOCALE=${PHP_WORDPRESS_LOCALE:-en_US}
-export PHP_WORDPRESS_DATABASE=${PHP_WORDPRESS_DATABASE:-}
-export PHP_WORDPRESS_DATABASE_USER=${PHP_WORDPRESS_DATABASE_USER:-}
-export PHP_WORDPRESS_DATABASE_PASSWORD=${PHP_WORDPRESS_DATABASE_PASSWORD:-}
-export PHP_WORDPRESS_DATABASE_HOST=${PHP_WORDPRESS_DATABASE_HOST:-mysql}
-export PHP_WORDPRESS_DATABASE_PORT=${PHP_WORDPRESS_DATABASE_PORT:-3306}
-export PHP_WORDPRESS_DATABASE_PREFIX=${PHP_WORDPRESS_DATABASE_PREFIX:-}
-export PHP_WORDPRESS_DATABASE_CHARSET=${PHP_WORDPRESS_DATABASE_CHARSET:-utf8mb4}
-export PHP_WORDPRESS_DATABASE_COLLATE=${PHP_WORDPRESS_DATABASE_COLLATE:-utf8mb4_unicode_ci}
+XS_WORDPRESS=${PHP_WORDPRESS:-no}
+XS_WORDPRESS_REDIS_OBJECT_CACHE=${PHP_WORDPRESS_REDIS_OBJECT_CACHE:-no}
+XS_WORDPRESS_LOCALE=${PHP_WORDPRESS_LOCALE:-en_US}
+XS_WORDPRESS_DATABASE=${PHP_WORDPRESS_DATABASE:-}
+XS_WORDPRESS_DATABASE_USER=${PHP_WORDPRESS_DATABASE_USER:-}
+XS_WORDPRESS_DATABASE_PASSWORD=${PHP_WORDPRESS_DATABASE_PASSWORD:-}
+XS_WORDPRESS_DATABASE_HOST=${PHP_WORDPRESS_DATABASE_HOST:-mysql}
+XS_WORDPRESS_DATABASE_PORT=${PHP_WORDPRESS_DATABASE_PORT:-3306}
+XS_WORDPRESS_DATABASE_PREFIX=${PHP_WORDPRESS_DATABASE_PREFIX:-}
+XS_WORDPRESS_DATABASE_CHARSET=${PHP_WORDPRESS_DATABASE_CHARSET:-utf8mb4}
+XS_WORDPRESS_DATABASE_COLLATE=${PHP_WORDPRESS_DATABASE_COLLATE:-utf8mb4_unicode_ci}
 
-export PHP_WORDPRESS_UPDATE=${PHP_WORDPRESS_UPDATE:-yes}
+XS_WORDPRESS_UPDATE=${PHP_WORDPRESS_UPDATE:-yes}
 
-export PHP_WORDPRESS_SUPER_CACHE=${PHP_WORDPRESS_SUPER_CACHE:-yes}
-export PHP_WORDPRESS_NGINX_CACHE=${PHP_WORDPRESS_NGINX_CACHE:-no}
-export PHP_WORDPRESS_CACHE_ENABLER=${PHP_WORDPRESS_CACHE_ENABLER:-no}
+XS_WORDPRESS_SUPER_CACHE=${PHP_WORDPRESS_SUPER_CACHE:-yes}
+XS_WORDPRESS_NGINX_CACHE=${PHP_WORDPRESS_NGINX_CACHE:-no}
+XS_WORDPRESS_CACHE_ENABLER=${PHP_WORDPRESS_CACHE_ENABLER:-no}
 
-export PHP_WORDPRESS_URL=${PHP_WORDPRESS_URL:-}
-export PHP_WORDPRESS_TITLE=${PHP_WORDPRESS_TITLE:-$PHP_WORDPRESS_URL}
-export PHP_WORDPRESS_ADMIN_EMAIL=${PHP_WORDPRESS_ADMIN_EMAIL:-}
-export PHP_WORDPRESS_ADMIN_USER=${PHP_WORDPRESS_ADMIN_USER:$PHP_WORDPRESS_ADMIN_EMAIL}
-export PHP_WORDPRESS_ADMIN_PASSWORD=${PHP_WORDPRESS_ADMIN_PASSWORD:-}
-export PHP_WORDPRESS_SKIP_EMAIL=${PHP_WORDPRESS_SKIP_EMAIL:-no}
+XS_WORDPRESS_URL=${PHP_WORDPRESS_URL:-}
+XS_WORDPRESS_TITLE=${PHP_WORDPRESS_TITLE:-$PHP_WORDPRESS_URL}
+XS_WORDPRESS_ADMIN_EMAIL=${PHP_WORDPRESS_ADMIN_EMAIL:-}
+XS_WORDPRESS_ADMIN_USER=${PHP_WORDPRESS_ADMIN_USER:$PHP_WORDPRESS_ADMIN_EMAIL}
+XS_WORDPRESS_ADMIN_PASSWORD=${PHP_WORDPRESS_ADMIN_PASSWORD:-}
+XS_WORDPRESS_SKIP_EMAIL=${PHP_WORDPRESS_SKIP_EMAIL:-no}
 
-PHP_MAX_UPLOAD_SIZE=${PHP_MAX_UPLOAD_SIZE:-32}
-PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%m}"
-export PHP_MAX_UPLOAD_SIZE="${PHP_MAX_UPLOAD_SIZE%M}"
 
-PHP_MAX_TIME=${PHP_MAX_TIME:-180}
-PHP_MAX_TIME="${PHP_MAX_TIME%s}"
-export PHP_MAX_TIME="${PHP_MAX_TIME%S}"
+XS_MAX_UPLOAD_SIZE=${PHP_MAX_UPLOAD_SIZE:-32}
+XS_MAX_UPLOAD_SIZE="${XS_MAX_UPLOAD_SIZE%m}"
+XS_MAX_UPLOAD_SIZE="${XS_MAX_UPLOAD_SIZE%M}"
 
-PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-256}
-PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%M}"
-PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT%m}"
+XS_MAX_TIME=${PHP_MAX_TIME:-180}
+XS_MAX_TIME="${XS_MAX_TIME%s}"
+XS_MAX_TIME="${XS_MAX_TIME%S}"
 
-if [[ $PHP_MEMORY_LIMIT -lt 64 ]] ; then
-  echo "WARNING: PHP_MEMORY_LIMIT if ${PHP_MEMORY_LIMIT} too low, setting to 64"
-  PHP_MEMORY_LIMIT=64
+XS_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-256}
+XS_MEMORY_LIMIT="${XS_MEMORY_LIMIT%M}"
+XS_MEMORY_LIMIT="${XS_MEMORY_LIMIT%m}"
+
+if [[ $XS_MEMORY_LIMIT -lt 64 ]] ; then
+  echo "WARNING: XS_MEMORY_LIMIT if ${XS_MEMORY_LIMIT} too low, setting to 64"
+  XS_MEMORY_LIMIT=64
 fi
-export PHP_MEMORY_LIMIT
+#XS_MEMORY_LIMIT
 
 ## Install extra php-extensions
-if [ ! -z "$PHP_EXTRA_EXTENSIONS" ] ; then
-  for extension in ${PHP_EXTRA_EXTENSIONS//,/ } ; do
+if [ ! -z "$XS_EXTRA_EXTENSIONS" ] ; then
+  for extension in ${XS_EXTRA_EXTENSIONS//,/ } ; do
     extension="${extension#php7-}"
     extension=${extension#php-}
     extension=${extension%@php}
@@ -76,22 +77,22 @@ fi
 ## Configure Remote SMTP config
 if [ -d "/etc/" ] && [ -w "/etc/" ] && [ -d "/etc/php7/conf.d/" ] && [ -w "/etc/php7/conf.d/" ] ; then
 
-  if [ ! -z "$PHP_SMTP_HOST" ] && [ ! -z "$PHP_SMTP_USER" ] && [ ! -z "$PHP_SMTP_PASSWORD" ] ; then
+  if [ ! -z "$XS_SMTP_HOST" ] && [ ! -z "$XS_SMTP_USER" ] && [ ! -z "$XS_SMTP_PASSWORD" ] ; then
     echo "Installing remote smtp (msmtp)"
 
     cat << EOF >> /etc/msmtprc
 defaults
-port ${PHP_SMTP_PORT}
+port ${XS_SMTP_PORT}
 tls on
 tls_starttls on
 tls_certcheck off
 
 account remote
-host ${PHP_SMTP_HOST}
-from ${PHP_SMTP_USER}
+host ${XS_SMTP_HOST}
+from ${XS_SMTP_USER}
 auth on
-user ${PHP_SMTP_USER}
-password ${PHP_SMTP_PASSWORD}
+user ${XS_SMTP_USER}
+password ${XS_SMTP_PASSWORD}
 
 account default : remote
 
@@ -112,7 +113,7 @@ EOF
 fi
 
 #wordpress specific, wp-cli
-if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WORDPRESS" == "on" ] || [ "$PHP_WORDPRESS" == "1" ] ; then
+if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDPRESS" == "on" ] || [ "$XS_WORDPRESS" == "1" ] ; then
   if [ ! -f "/usr/local/bin/wp-cli" ] ; then
     echo "Installing WP-CLI"
     wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp-cli
@@ -139,21 +140,21 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
   fi
   # ensure wp-cli is updated
 
-  if [ ! -z "$PHP_WORDPRESS_DATABASE" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_USER" ] && [ ! -z "$PHP_WORDPRESS_DATABASE_PASSWORD" ] && [ ! -z "$PHP_WORDPRESS_URL" ] && [ ! -z "$PHP_WORDPRESS_ADMIN_EMAIL" ] ; then
-    if [ "$PHP_WORDPRESS_SKIP_EMAIL" != "no" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "false" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "off" ] && [ "$PHP_WORDPRESS_SKIP_EMAIL" != "0" ] && [ -z "$PHP_WORDPRESS_SKIP_EMAIL" ]; then
-      echo "ERROR: PHP_WORDPRESS_SKIP_EMAIL enabled, PHP_WORDPRESS_ADMIN_PASSWORD can NOT be empty "
+  if [ ! -z "$XS_WORDPRESS_DATABASE" ] && [ ! -z "$XS_WORDPRESS_DATABASE_USER" ] && [ ! -z "$XS_WORDPRESS_DATABASE_PASSWORD" ] && [ ! -z "$XS_WORDPRESS_URL" ] && [ ! -z "$XS_WORDPRESS_ADMIN_EMAIL" ] ; then
+    if [ "$XS_WORDPRESS_SKIP_EMAIL" != "no" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "false" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "off" ] && [ "$XS_WORDPRESS_SKIP_EMAIL" != "0" ] && [ -z "$XS_WORDPRESS_SKIP_EMAIL" ]; then
+      echo "ERROR: XS_WORDPRESS_SKIP_EMAIL enabled, XS_WORDPRESS_ADMIN_PASSWORD can NOT be empty "
       sleep 1d
       exit 1
     fi
 
     # Wait for MySQL to warm-up
-    while ! mysqladmin ping --host "$PHP_WORDPRESS_DATABASE_HOST" --port "$PHP_WORDPRESS_DATABASE_PORT" -u"$PHP_WORDPRESS_DATABASE_USER" -p"$PHP_WORDPRESS_DATABASE_PASSWORD" --silent; do
+    while ! mysqladmin ping --host "$XS_WORDPRESS_DATABASE_HOST" --port "$XS_WORDPRESS_DATABASE_PORT" -u"$XS_WORDPRESS_DATABASE_USER" -p"$XS_WORDPRESS_DATABASE_PASSWORD" --silent; do
       echo "Waiting for database to come up..."
       sleep 2
     done
 
-    if [ -z "$PHP_WORDPRESS_DATABASE_PREFIX" ] ; then
-      PHP_WORDPRESS_DATABASE_PREFIX="$(echo $RANDOM)_"
+    if [ -z "$XS_WORDPRESS_DATABASE_PREFIX" ] ; then
+      XS_WORDPRESS_DATABASE_PREFIX="$(echo $RANDOM)_"
     fi
 
     echo "Download / Configure / Install Wordpress"
@@ -166,13 +167,13 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
        /usr/local/bin/wp-cli --allow-root --path=/var/www/html core download > /dev/null
     fi
 
-    if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$PHP_WORDPRESS_DATABASE" --dbuser="$PHP_WORDPRESS_DATABASE_USER" --dbpass="$PHP_WORDPRESS_DATABASE_PASSWORD" --dbhost="$PHP_WORDPRESS_DATABASE_HOST:$PHP_WORDPRESS_DATABASE_PORT" --dbprefix="$PHP_WORDPRESS_DATABASE_PREFIX" --dbcharset="$PHP_WORDPRESS_DATABASE_CHARSET" --dbcollate="$PHP_WORDPRESS_DATABASE_COLLATE" --locale="$PHP_WORDPRESS_LOCALE" ; then
-      if [ "$PHP_WORDPRESS_SKIP_EMAIL" == "yes" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" == "true" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" == "on" ] || [ "$PHP_WORDPRESS_SKIP_EMAIL" == "1" ] ; then
+    if /usr/local/bin/wp-cli --allow-root --path=/var/www/html config create --dbname="$XS_WORDPRESS_DATABASE" --dbuser="$XS_WORDPRESS_DATABASE_USER" --dbpass="$XS_WORDPRESS_DATABASE_PASSWORD" --dbhost="$XS_WORDPRESS_DATABASE_HOST:$XS_WORDPRESS_DATABASE_PORT" --dbprefix="$XS_WORDPRESS_DATABASE_PREFIX" --dbcharset="$XS_WORDPRESS_DATABASE_CHARSET" --dbcollate="$XS_WORDPRESS_DATABASE_COLLATE" --locale="$XS_WORDPRESS_LOCALE" ; then
+      if [ "$XS_WORDPRESS_SKIP_EMAIL" == "yes" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "true" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "on" ] || [ "$XS_WORDPRESS_SKIP_EMAIL" == "1" ] ; then
         this_skip_email="--skip-email"
       else
         this_skip_email=""
       fi
-      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$PHP_WORDPRESS_URL" --title="$PHP_WORDPRESS_TITLE" --admin_user="$PHP_WORDPRESS_ADMIN_USER" --admin_password="$PHP_WORDPRESS_ADMIN_PASSWORD" --admin_email="$PHP_WORDPRESS_ADMIN_EMAIL" $this_skip_email >> /tmp/wordpress.log ; then
+      if /usr/local/bin/wp-cli --allow-root --path=/var/www/html core install --url="$XS_WORDPRESS_URL" --title="$XS_WORDPRESS_TITLE" --admin_user="$XS_WORDPRESS_ADMIN_USER" --admin_password="$XS_WORDPRESS_ADMIN_PASSWORD" --admin_email="$XS_WORDPRESS_ADMIN_EMAIL" $this_skip_email >> /tmp/wordpress.log ; then
 
         # save admin password if it was generated to /var/www/html/.xs_password
         this_admin_password="$(grep "Admin password" /tmp/wordpress.log)"
@@ -185,23 +186,23 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
         # change admin userid from 1 to a random 6 digit number
         WPUID="$(echo $RANDOM$RANDOM |cut -c1-6)"
         echo "Setting Admin ID from 1 to ${WPUID}"
-        /usr/local/bin/wp-cli --allow-root --path=/var/www/html db query "UPDATE ${PHP_WORDPRESS_DATABASE_PREFIX}users SET ID=${WPUID} WHERE ID=1; UPDATE ${PHP_WORDPRESS_DATABASE_PREFIX}usermeta SET user_id=${WPUID} WHERE user_id=1"
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html db query "UPDATE ${XS_WORDPRESS_DATABASE_PREFIX}users SET ID=${WPUID} WHERE ID=1; UPDATE ${XS_WORDPRESS_DATABASE_PREFIX}usermeta SET user_id=${WPUID} WHERE user_id=1"
 
         # add index on autoload
         echo "Creating Index on autoload"
-        /usr/local/bin/wp-cli --allow-root --path=/var/www/html db query "ALTER TABLE ${PHP_WORDPRESS_DATABASE_PREFIX}options ADD INDEX autoload_idx (autoload)"
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html db query "ALTER TABLE ${XS_WORDPRESS_DATABASE_PREFIX}options ADD INDEX autoload_idx (autoload)"
 
         # change permalinks out of the box
         echo "Setting permalinks to /%post_id%/%postname%/"
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html rewrite structure '/%post_id%/%postname%/'
 
         # Memory optimising
-        if [[ $PHP_MEMORY_LIMIT -lt 128 ]] ; then
-          WP_MEMORY_LIMIT=$((PHP_MEMORY_LIMIT/2 +16))
-          WP_MAX_MEMORY_LIMIT=$PHP_MEMORY_LIMIT
+        if [[ $XS_MEMORY_LIMIT -lt 128 ]] ; then
+          WP_MEMORY_LIMIT=$((XS_MEMORY_LIMIT/2 +16))
+          WP_MAX_MEMORY_LIMIT=$XS_MEMORY_LIMIT
         else
-          WP_MEMORY_LIMIT=$((PHP_MEMORY_LIMIT/2))
-          WP_MAX_MEMORY_LIMIT=$PHP_MEMORY_LIMIT
+          WP_MEMORY_LIMIT=$((XS_MEMORY_LIMIT/2))
+          WP_MAX_MEMORY_LIMIT=$XS_MEMORY_LIMIT
         fi
         export WP_MEMORY_LIMIT
         export WP_MAX_MEMORY_LIMIT
@@ -246,14 +247,14 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
         chmod 0644 /var/www/html/.htaccess
         touch /var/www/html/wp-content/uploads/index.php
 
-        if [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "true" ] || [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "on" ] || [ "$PHP_WORDPRESS_REDIS_OBJECT_CACHE" == "1" ] ; then
+        if [ "$XS_WORDPRESS_REDIS_OBJECT_CACHE" == "yes" ] || [ "$XS_WORDPRESS_REDIS_OBJECT_CACHE" == "true" ] || [ "$XS_WORDPRESS_REDIS_OBJECT_CACHE" == "on" ] || [ "$XS_WORDPRESS_REDIS_OBJECT_CACHE" == "1" ] ; then
           echo "Enabling redis object cache"
           awk "/That's all, stop editing/ {
           print \"# eXtremeSHOK.com Redis Object Cache\"
           print \"define( 'WP_REDIS_CLIENT', 'predis' );\"
           print \"define( 'WP_REDIS_SCHEME', 'tcp' );\"
-          print \"define( 'WP_REDIS_HOST', '${PHP_REDIS_HOST}' );\"
-          print \"define( 'WP_REDIS_PORT', '${PHP_REDIS_PORT}' );\"
+          print \"define( 'WP_REDIS_HOST', '${XS_REDIS_HOST}' );\"
+          print \"define( 'WP_REDIS_PORT', '${XS_REDIS_PORT}' );\"
           print \"define( 'WP_REDIS_SELECTIVE_FLUSH', 'true' );\"
           print \"#define( 'WP_REDIS_MAXTTL', '7200' );\"
           print \"#define( 'WP_REDIS_GLOBAL_GROUPS', '['blog-details', 'blog-id-cache', 'blog-lookup', 'global-posts', 'networks', 'rss', 'sites', 'site-details', 'site-lookup', 'site-options', 'site-transient', 'users', 'useremail', 'userlogins', 'usermeta', 'user_meta', 'userslugs']' );\"
@@ -277,7 +278,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate https://envato.github.io/wp-envato-market/dist/envato-market.zip
 
         # cache and cdn
-        if [ "$PHP_WORDPRESS_SUPER_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "true" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "on" ] || [ "$PHP_WORDPRESS_SUPER_CACHE" == "1" ] ; then
+        if [ "$XS_WORDPRESS_SUPER_CACHE" == "yes" ] || [ "$XS_WORDPRESS_SUPER_CACHE" == "true" ] || [ "$XS_WORDPRESS_SUPER_CACHE" == "on" ] || [ "$XS_WORDPRESS_SUPER_CACHE" == "1" ] ; then
           echo "Enabling Super Cache"
           awk "/That's all, stop editing/ {
           print \"# eXtremeSHOK.com SUPER CACHE\"
@@ -287,11 +288,11 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
           }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
           mkdir -p /var/www/cache/
           /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-super-cache
-        elif [ "$PHP_WORDPRESS_NGINX_CACHE" == "yes" ] || [ "$PHP_WORDPRESS_NGINX_CACHE" == "true" ] || [ "$PHP_WORDPRESS_NGINX_CACHE" == "on" ] || [ "$PHP_WORDPRESS_NGINX_CACHE" == "1" ] ; then
+        elif [ "$XS_WORDPRESS_NGINX_CACHE" == "yes" ] || [ "$XS_WORDPRESS_NGINX_CACHE" == "true" ] || [ "$XS_WORDPRESS_NGINX_CACHE" == "on" ] || [ "$XS_WORDPRESS_NGINX_CACHE" == "1" ] ; then
          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate nginx-helper
          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install cdn-enabler
          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install bunnycdn
-       elif [ "$PHP_WORDPRESS_CACHE_ENABLER" == "yes" ] || [ "$PHP_WORDPRESS_CACHE_ENABLER" == "true" ] || [ "$PHP_WORDPRESS_CACHE_ENABLER" == "on" ] || [ "$PHP_WORDPRESS_CACHE_ENABLER" == "1" ] ; then
+       elif [ "$XS_WORDPRESS_CACHE_ENABLER" == "yes" ] || [ "$XS_WORDPRESS_CACHE_ENABLER" == "true" ] || [ "$XS_WORDPRESS_CACHE_ENABLER" == "on" ] || [ "$XS_WORDPRESS_CACHE_ENABLER" == "1" ] ; then
          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate cache-enabler
          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install cdn-enabler
          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install bunnycdn
@@ -334,7 +335,7 @@ if [ "$PHP_WORDPRESS" == "yes" ] || [ "$PHP_WORDPRESS" == "true" ] || [ "$PHP_WO
     fi
   fi
 
-  if [ "$PHP_WORDPRESS_UPDATE" == "yes" ] || [ "$PHP_WORDPRESS_UPDATE" == "true" ] || [ "$PHP_WORDPRESS_UPDATE" == "on" ] || [ "$PHP_WORDPRESS_UPDATE" == "1" ] ; then
+  if [ "$XS_WORDPRESS_UPDATE" == "yes" ] || [ "$XS_WORDPRESS_UPDATE" == "true" ] || [ "$XS_WORDPRESS_UPDATE" == "on" ] || [ "$XS_WORDPRESS_UPDATE" == "1" ] ; then
     echo "Updating Wordpress"
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update-db
@@ -347,41 +348,41 @@ fi
 
 ## Configure PHP
 if [ -d "/etc/php7/conf.d" ] && [ -w "/etc/php7/conf.d" ] ; then
-  if [ "$PHP_DISABLE_FUNCTIONS" == "no" ] || [ "$PHP_DISABLE_FUNCTIONS" == "false" ] || [ "$PHP_DISABLE_FUNCTIONS" == "off" ] || [ "$PHP_DISABLE_FUNCTIONS" == "0" ] ; then
+  if [ "$XS_DISABLE_FUNCTIONS" == "no" ] || [ "$XS_DISABLE_FUNCTIONS" == "false" ] || [ "$XS_DISABLE_FUNCTIONS" == "off" ] || [ "$XS_DISABLE_FUNCTIONS" == "0" ] ; then
     echo "" > /etc/php7/php-fpm-conf.d/xs_disable_functions.conf
   else
-    echo "php_admin_value[disable_functions] = ${PHP_DISABLE_FUNCTIONS}" > /etc/php7/php-fpm-conf.d/xs_disable_functions.conf
+    echo "php_admin_value[disable_functions] = ${XS_DISABLE_FUNCTIONS}" > /etc/php7/php-fpm-conf.d/xs_disable_functions.conf
   fi
 fi
 
 if [ -d "/etc/php7/php-fpm-conf.d/" ] && [ -w "/etc/php7/php-fpm-conf.d/" ] ; then
 
-  if [ "$PHP_REDIS_SESSIONS" == "yes" ] || [ "$PHP_REDIS_SESSIONS" == "true" ] || [ "$PHP_REDIS_SESSIONS" == "on" ] || [ "$PHP_REDIS_SESSIONS" == "1" ] ; then
+  if [ "$XS_REDIS_SESSIONS" == "yes" ] || [ "$XS_REDIS_SESSIONS" == "true" ] || [ "$XS_REDIS_SESSIONS" == "on" ] || [ "$XS_REDIS_SESSIONS" == "1" ] ; then
     echo "Enabling redis sessions"
     cat << EOF > /etc/php7/conf.d/xs_redis.ini
 session.save_handler = redis
-session.save_path = "tcp://${PHP_REDIS_HOST}:${PHP_REDIS_PORT}"
+session.save_path = "tcp://${XS_REDIS_HOST}:${XS_REDIS_PORT}"
 EOF
   fi
 
-  echo "date.timezone = ${PHP_TIMEZONE}" > /etc/php7/conf.d/xs_timezone.ini
+  echo "date.timezone = ${XS_TIMEZONE}" > /etc/php7/conf.d/xs_timezone.ini
 
   cat << EOF > /etc/php7/conf.d/xs_max_time.ini
-  max_execution_time = ${PHP_MAX_TIME}
-  max_input_time = ${PHP_MAX_TIME}
+  max_execution_time = ${XS_MAX_TIME}
+  max_input_time = ${XS_MAX_TIME}
 EOF
 
   cat << EOF > /etc/php7/conf.d/xs_max_upload_size.ini
-  upload_max_filesize = ${PHP_MAX_UPLOAD_SIZE}M
-  post_max_size = ${PHP_MAX_UPLOAD_SIZE}M
+  upload_max_filesize = ${XS_MAX_UPLOAD_SIZE}M
+  post_max_size = ${XS_MAX_UPLOAD_SIZE}M
 EOF
 
   cat << EOF > /etc/php7/conf.d/xs_max_time.ini
-  max_execution_time = ${PHP_MAX_TIME}
-  max_input_time = ${PHP_MAX_TIME}
+  max_execution_time = ${XS_MAX_TIME}
+  max_input_time = ${XS_MAX_TIME}
 EOF
 
-  echo "memory_limit = ${PHP_MEMORY_LIMIT}M" > /etc/php7/conf.d/xs_memory_limit.ini
+  echo "memory_limit = ${XS_MEMORY_LIMIT}M" > /etc/php7/conf.d/xs_memory_limit.ini
 fi
 
 echo "#### Checking PHP configs ####"
@@ -393,15 +394,15 @@ if [ "$result" != "0" ] ; then
   exit 1
 fi
 
-if [ "$PHP_CHOWN" == "yes" ] || [ "$PHP_CHOWN" == "true" ] || [ "$PHP_CHOWN" == "on" ] || [ "$PHP_CHOWN" == "1" ] ; then
+if [ "$XS_CHOWN" == "yes" ] || [ "$XS_CHOWN" == "true" ] || [ "$XS_CHOWN" == "on" ] || [ "$XS_CHOWN" == "1" ] ; then
   echo "Setting ownership of /var/www/html"
   chown -f -R nobody:nobody /var/www/html
 fi
 
-if [ "$PHP_REDIS_SESSIONS" == "yes" ] || [ "$PHP_REDIS_SESSIONS" == "true" ] || [ "$PHP_REDIS_SESSIONS" == "on" ] || [ "$PHP_REDIS_SESSIONS" == "1" ] ; then
+if [ "$XS_REDIS_SESSIONS" == "yes" ] || [ "$XS_REDIS_SESSIONS" == "true" ] || [ "$XS_REDIS_SESSIONS" == "on" ] || [ "$XS_REDIS_SESSIONS" == "1" ] ; then
   # wait for redis to start
-  while ! echo PING | nc ${PHP_REDIS_HOST} ${PHP_REDIS_PORT} ; do
-    echo "waiting for redis ${PHP_REDIS_HOST}:${PHP_REDIS_PORT}"
+  while ! echo PING | nc ${XS_REDIS_HOST} ${XS_REDIS_PORT} ; do
+    echo "waiting for redis ${XS_REDIS_HOST}:${XS_REDIS_PORT}"
     sleep 5s
   done
 fi
