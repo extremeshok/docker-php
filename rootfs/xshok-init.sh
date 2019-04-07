@@ -33,9 +33,9 @@ XS_WORDPRESS_DATABASE_COLLATE=${PHP_WORDPRESS_DATABASE_COLLATE:-utf8mb4_unicode_
 
 XS_WORDPRESS_UPDATE=${PHP_WORDPRESS_UPDATE:-yes}
 
-XS_WORDPRESS_SUPER_CACHE=${PHP_WORDPRESS_SUPER_CACHE:-yes}
+XS_WORDPRESS_CACHE_ENABLER=${PHP_WORDPRESS_CACHE_ENABLER:-yes}
+XS_WORDPRESS_SUPER_CACHE=${PHP_WORDPRESS_SUPER_CACHE:-no}
 XS_WORDPRESS_NGINX_CACHE=${PHP_WORDPRESS_NGINX_CACHE:-no}
-XS_WORDPRESS_CACHE_ENABLER=${PHP_WORDPRESS_CACHE_ENABLER:-no}
 
 XS_WORDPRESS_URL=${PHP_WORDPRESS_URL:-}
 XS_WORDPRESS_TITLE=${PHP_WORDPRESS_TITLE:-$PHP_WORDPRESS_URL}
@@ -124,7 +124,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
     fi
     if [ ! -f "/etc/bash_completion.d/wp-completion" ] ; then
       mkdir -p /etc/bash_completion.d
-      wget https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -O /etc/bash_completion.d/wp-completion
+      wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -O /etc/bash_completion.d/wp-completion
     fi
   fi
   # allow root to use wp-cli
@@ -260,9 +260,12 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
         print \"define( 'FORCE_SSL_ADMIN', true );\"
         print \"define( 'DISALLOW_UNFILTERED_HTML', true );\"
         print \"# Recommended Options\"
-        print \"define('EMPTY_TRASH_DAYS', 30);\"
-        print \"define( 'WP_POST_REVISIONS', 5 );\"
+        print \"define('EMPTY_TRASH_DAYS', 10);\"
+        print \"define( 'WP_POST_REVISIONS', 10 );\"
         print \"define( 'AUTOSAVE_INTERVAL', 90 );\"
+        print \"define('WP_AUTO_UPDATE_CORE', 'minor' );\"
+        print \"define('DISABLE_WP_CRON', false);\"
+        print \"define('CONCATENATE_SCRIPTS', false);\"
         print \"\"
         }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
 
@@ -307,8 +310,25 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate better-search-replace
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate https://envato.github.io/wp-envato-market/dist/envato-market.zip
 
+# CRON
+# #*/15 * * * * wget -O - -q -t 1 https://new.apollo-auto.com/wp-cron.php?doing_wp_cron > /dev/null 2>&1
+
         # cache and cdn
-        if [ "$XS_WORDPRESS_SUPER_CACHE" == "yes" ] || [ "$XS_WORDPRESS_SUPER_CACHE" == "true" ] || [ "$XS_WORDPRESS_SUPER_CACHE" == "on" ] || [ "$XS_WORDPRESS_SUPER_CACHE" == "1" ] ; then
+        if [ "$XS_WORDPRESS_CACHE_ENABLER" == "yes" ] || [ "$XS_WORDPRESS_CACHE_ENABLER" == "true" ] || [ "$XS_WORDPRESS_CACHE_ENABLER" == "on" ] || [ "$XS_WORDPRESS_CACHE_ENABLER" == "1" ] ; then
+          echo "Enabling Cache Enabler"
+          #awk "/That's all, stop editing/ {
+          #  print \"# eXtremeSHOK.com CACHE ENABLER\"
+          #  print \"define('WP_CACHE', true);\"
+          #  print \"\"
+          #}{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
+          #mkdir -p /var/www/cache/
+          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate cache-enabler
+          ECHO "Configuring cache-enabler"
+          /usr/local/bin/wp-cli --allow-root --path=/var/www/html option update cache-enabler '{"expires":6,"new_post":1,"new_comment":1,"webp":0,"clear_on_upgrade":1,"compress":1,"excl_ids":"","excl_regexp":"","excl_cookies":"","excl_querystrings":"","minify_html":0}' --format=json
+          /usr/local/bin/wp-cli --allow-root --path=/var/www/html option get cache-enabler --format=json
+          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install cdn-enabler
+          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install bunnycdn
+        elif [ "$XS_WORDPRESS_SUPER_CACHE" == "yes" ] || [ "$XS_WORDPRESS_SUPER_CACHE" == "true" ] || [ "$XS_WORDPRESS_SUPER_CACHE" == "on" ] || [ "$XS_WORDPRESS_SUPER_CACHE" == "1" ] ; then
           echo "Enabling Super Cache"
           awk "/That's all, stop editing/ {
           print \"# eXtremeSHOK.com SUPER CACHE\"
@@ -318,12 +338,9 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
           }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
           mkdir -p /var/www/cache/
           /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-super-cache
+          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-super-cache-clear-cache-menu
         elif [ "$XS_WORDPRESS_NGINX_CACHE" == "yes" ] || [ "$XS_WORDPRESS_NGINX_CACHE" == "true" ] || [ "$XS_WORDPRESS_NGINX_CACHE" == "on" ] || [ "$XS_WORDPRESS_NGINX_CACHE" == "1" ] ; then
          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate nginx-helper
-         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install cdn-enabler
-         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install bunnycdn
-       elif [ "$XS_WORDPRESS_CACHE_ENABLER" == "yes" ] || [ "$XS_WORDPRESS_CACHE_ENABLER" == "true" ] || [ "$XS_WORDPRESS_CACHE_ENABLER" == "on" ] || [ "$XS_WORDPRESS_CACHE_ENABLER" == "1" ] ; then
-         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate cache-enabler
          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install cdn-enabler
          /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install bunnycdn
         else
