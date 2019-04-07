@@ -114,7 +114,7 @@ fi
 if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDPRESS" == "on" ] || [ "$XS_WORDPRESS" == "1" ] ; then
   if [ ! -f "/usr/local/bin/wp-cli" ] ; then
     echo "Installing WP-CLI"
-    wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp-cli
+    curl --retry-connrefused --retry 9 --retry-delay 1 --retry-max-time 90 --connect-timeout 15 --max-time 20 https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar --output /usr/local/bin/wp-cli
     chmod +x /usr/local/bin/wp-cli
     if ! /usr/local/bin/wp-cli --info | grep -q "WP-CLI version" ; then
       echo "ERROR: WP-CLI install failed"
@@ -124,7 +124,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
     fi
     if [ ! -f "/etc/bash_completion.d/wp-completion" ] ; then
       mkdir -p /etc/bash_completion.d
-      wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash -O /etc/bash_completion.d/wp-completion
+      curl --retry-connrefused --retry 9 --retry-delay 1 --retry-max-time 90 --connect-timeout 15 --max-time 20 https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash --output /etc/bash_completion.d/wp-completion
     fi
   fi
   # allow root to use wp-cli
@@ -323,7 +323,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
           #}{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
           #mkdir -p /var/www/cache/
           /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate cache-enabler
-          ECHO "Configuring cache-enabler"
+          echo "Configuring cache-enabler"
           /usr/local/bin/wp-cli --allow-root --path=/var/www/html option update cache-enabler '{"expires":6,"new_post":1,"new_comment":1,"webp":0,"clear_on_upgrade":1,"compress":1,"excl_ids":"","excl_regexp":"","excl_cookies":"","excl_querystrings":"","minify_html":0}' --format=json
           /usr/local/bin/wp-cli --allow-root --path=/var/www/html option get cache-enabler --format=json
           /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install cdn-enabler
