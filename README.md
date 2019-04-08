@@ -73,9 +73,11 @@ https://github.com/codecasts/php-alpine#available-packages
 # Wordpress extensions
 * amp
 * better-search-replace
+* disable-admin-notices
 * disable-emojis
 * disable-xml-rpc-pingback
 * duplicate-post
+* easy-theme-and-plugin-upgrades
 * envato-market
 * google-analytics-dashboard-for-wp
 * google-sitemap-generator
