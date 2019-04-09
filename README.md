@@ -90,6 +90,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * query-monitor
 * rocket-lazy-load
 * server-ip-memory-usage
+* safe-svg
 * sucuri-scanner
 * tinymce-advanced
 * two-factor

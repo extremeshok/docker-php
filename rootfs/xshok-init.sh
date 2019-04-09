@@ -373,6 +373,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install lazy-load-for-videos
 
         # security
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate safe-svg
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate disable-xml-rpc-pingback
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate disable-emojis
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate two-factor
