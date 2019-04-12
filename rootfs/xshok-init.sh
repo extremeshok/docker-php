@@ -19,6 +19,7 @@ XS_SMTP_PORT=${PHP_SMTP_PORT:-587}
 XS_SMTP_USER=${PHP_SMTP_USER:-}
 XS_SMTP_PASSWORD=${PHP_SMTP_PASSWORD:-}
 
+
 XS_WORDPRESS=${PHP_WORDPRESS:-no}
 XS_WORDPRESS_REDIS_OBJECT_CACHE=${PHP_WORDPRESS_REDIS_OBJECT_CACHE:-no}
 XS_WORDPRESS_LOCALE=${PHP_WORDPRESS_LOCALE:-en_US}
@@ -32,6 +33,7 @@ XS_WORDPRESS_DATABASE_CHARSET=${PHP_WORDPRESS_DATABASE_CHARSET:-utf8mb4}
 XS_WORDPRESS_DATABASE_COLLATE=${PHP_WORDPRESS_DATABASE_COLLATE:-utf8mb4_unicode_ci}
 
 XS_WORDPRESS_UPDATE=${PHP_WORDPRESS_UPDATE:-yes}
+XS_WORDPRESS_CRONJOB=${PHP_WORDPRESS_CRONJOB:-yes}
 
 XS_WORDPRESS_CACHE_ENABLER=${PHP_WORDPRESS_CACHE_ENABLER:-yes}
 XS_WORDPRESS_SUPER_CACHE=${PHP_WORDPRESS_SUPER_CACHE:-no}
@@ -312,6 +314,8 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate better-search-replace
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate https://envato.github.io/wp-envato-market/dist/envato-market.zip
 
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate contact-form-7
+
 # CRON
 # #*/15 * * * * wget -O - -q -t 1 https://new.apollo-auto.com/wp-cron.php?doing_wp_cron > /dev/null 2>&1
 
@@ -395,6 +399,35 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html core version
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin status
   fi
+
+  if [ "$XS_WORDPRESS_CRONJOB" == "yes" ] || [ "$XS_WORDPRESS_CRONJOB" == "true" ] || [ "$XS_WORDPRESS_CRONJOB" == "on" ] || [ "$XS_WORDPRESS_CRONJOB" == "1" ] ; then
+    echo "Enabling redis sessions"
+    if [ ! -f "/etc/cron.d/wp-cli" ] ; then
+      cat << EOF > /etc/cron.d/wp-cli
+# eXtremeSHOK.com :: WP-CLI  Cron
+# every 5mins
+*/5 * * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html cron event run --due-now --quiet
+EOF
+fi
+if ! grep -q "DISABLE_WP_CRON" /var/www/html/wp-config.php ; then
+awk "/That's all, stop editing/ {
+print \"# eXtremeSHOK.com Use Cron via WP-CLI\"
+print \"if ( \!defined( 'DISABLE_WP_CRON' ) ) {\"
+print \"   define( 'DISABLE_WP_CRON', true ); }\"
+print \"\"
+}{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
+else
+  sed -i "s|'DISABLE_WP_CRON', false|'DISABLE_WP_CRON', true" /var/www/html/wp-config.php
+fi
+  else
+    if grep -q "'DISABLE_WP_CRON', true" /var/www/html/wp-config.php ; then
+      sed -i "s|'DISABLE_WP_CRON', true|'DISABLE_WP_CRON', false" /var/www/html/wp-config.php
+    fi
+    if [ -f "/etc/cron.d/wp-cli" ] ; then
+      rm -f /etc/cron.d/wp-cli
+    fi
+  fi
+
 fi
 
 ## Configure PHP
@@ -456,4 +489,10 @@ if [ "$XS_REDIS_SESSIONS" == "yes" ] || [ "$XS_REDIS_SESSIONS" == "true" ] || [ 
     echo "waiting for redis ${XS_REDIS_HOST}:${XS_REDIS_PORT}"
     sleep 5s
   done
+fi
+
+# Generate a crontab, as busybox only allows for a single cron, all cron will be run as the nobody user
+if [ ! -f "/etc/cron.d/*" ] ; then
+  echo "Generating single crontab from cronjobs in /etc/cron.d/"
+  cat /etc/cron.d/* | crontab -u nobody -
 fi

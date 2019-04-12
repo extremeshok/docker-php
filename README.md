@@ -1,7 +1,7 @@
 # eXtremeSHOK.com Docker PHP-FPM 7.3 on Alpine Linux
 
 * Alpine Linux 3.8 with S6
-* cron (/etc/cron.d) enabled for scheduling tasks
+* cron (/etc/cron.d) enabled for scheduling tasks, run as user nobody
 * PHP 7.3 from CODECASTS PHP Repository for Alpine
 * IONICE set to -10
 * Zend opcache enabled
@@ -44,6 +44,7 @@ https://github.com/codecasts/php-alpine#available-packages
 
 # WORDPRESS
 * PHP_WORDPRESS=false (set to true to have the WP_cli installed)
+* PHP_WORDPRESS_CRONJOB=yes (run WP cron tasks via proper cronjob)
 * PHP_WORDPRESS_REDIS_OBJECT_CACHE=false (set to true to have wordpress redis object cache enabled)
 * PHP_WORDPRESS_LOCALE=en_US
 * PHP_WORDPRESS_DATABASE=
@@ -73,6 +74,7 @@ https://github.com/codecasts/php-alpine#available-packages
 # Wordpress extensions
 * amp
 * better-search-replace
+* contact-form-7
 * disable-admin-notices
 * disable-emojis
 * disable-xml-rpc-pingback

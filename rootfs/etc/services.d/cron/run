@@ -7,4 +7,4 @@ mkdir -p /etc/cron.d
 #-d N	Set log level, log to stderr. Most verbose 0, default 8
 # -c DIR	Cron dir
 
-crond -f -d 8 -c /etc/cron.d
+crond -f -d 6
