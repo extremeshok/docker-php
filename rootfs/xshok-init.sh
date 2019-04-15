@@ -68,6 +68,7 @@ fi
 if [ "$XS_EXTRA_EXTENSIONS" != "" ] ; then
   for extension in ${XS_EXTRA_EXTENSIONS//,/ } ; do
     extension="${extension#php7-}"
+    extension="${extension##\"}"
     extension=${extension#php-}
     extension=${extension%@php}
     echo "Installing php extension: ${extension}"
