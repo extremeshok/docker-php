@@ -246,6 +246,11 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
         print \"# eXtremeSHOK.com Optimisation\"
         print \"# Reduce the number of database calls when loading your site\"
         # shellcheck disable=SC1087
+        print \"if (\empty(\$HTTP_HOST)) { \"
+        print \"define( 'HTTP_HOST', ''.\$_SERVER['SERVER_NAME'].'' );\"
+        print \"}\"
+        print \"# Reduce the number of database calls when loading your site\"
+        # shellcheck disable=SC1087
         print \"if (\!empty(\$_SERVER['SERVER_NAME'])) { \"
         print \"define( 'WP_SITEURL', 'https://' . \$_SERVER['SERVER_NAME'] .'' );\"
         print \"define( 'WP_HOME', 'https://' . \$_SERVER['SERVER_NAME'] .'' );\"
@@ -406,9 +411,13 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
     echo "Enabling redis sessions"
     if [ ! -f "/etc/cron.d/wp-cli" ] ; then
       cat << EOF > /etc/cron.d/wp-cli
-# eXtremeSHOK.com :: WP-CLI  Cron
-# every 5mins
+# eXtremeSHOK.com :: WP-CLI
+# Cron every 5mins
 */5 * * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html cron event run --due-now --quiet
+# Update plugins ever hour
+0 * * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all
+# Update core every 6 hours
+0 */6 * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update && /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update-db
 EOF
 fi
 if ! grep -q "DISABLE_WP_CRON" /var/www/html/wp-config.php ; then

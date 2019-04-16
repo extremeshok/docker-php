@@ -1,33 +1,25 @@
 <?php
 
-define('ADMIN_USERNAME','admin');    // Admin Username
-define('ADMIN_PASSWORD','admin');    // Admin Password
+define('ADMIN_USERNAME', 'admin');    // Admin Username
+define('ADMIN_PASSWORD', 'admin');    // Admin Password
 
 ///////////////// Password protect ////////////////////////////////////////////////////////////////
-if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
-           $_SERVER['PHP_AUTH_USER'] != ADMIN_USERNAME ||$_SERVER['PHP_AUTH_PW'] != ADMIN_PASSWORD) {
-            Header("WWW-Authenticate: Basic realm=\"PHP Redis Login\"");
-            Header("HTTP/1.0 401 Unauthorized");
-            echo <<<EOB
-                <html><body>
-                <h1>Rejected!</h1>
-                <big>Wrong Username or Password!</big>
-                </body></html>
-EOB;
-            exit;
+if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] != ADMIN_USERNAME ||$_SERVER['PHP_AUTH_PW'] != ADMIN_PASSWORD) {
+    Header("WWW-Authenticate: Basic realm=\"PHP Redis Login\"");
+    Header("HTTP/1.0 401 Unauthorized");
+    echo "<html><body><h1>Rejected!</h1><big>Wrong Username or Password!</big></body></html>";
+    exit;
 }
-
 
 // CONFIG
 $servers = array(
-	array('redis', 'redis', 6379),
+    array('redis', 'redis', 6379),
 );
-
 // END CONFIG
 
 $server = 0;
 if (isset($_GET['s']) && intval($_GET['s']) < count($servers)) {
-	$server = intval($_GET['s']);
+    $server = intval($_GET['s']);
 }
 
 $fp = fsockopen($servers[$server][1], $servers[$server][2], $errno, $errstr, 30);
@@ -40,12 +32,15 @@ if (!$fp) {
     fwrite($fp, "INFO\r\nQUIT\r\n");
     while (!feof($fp)) {
         $info = explode(':', trim(fgets($fp)), 2);
-        if (isset($info[1])) $data[$info[0]] = $info[1];
+        if (isset($info[1])) {
+            $data[$info[0]] = $info[1];
+        }
     }
     fclose($fp);
 }
 
-function time_elapsed($secs){
+function time_elapsed($secs)
+{
     $bit = array(
         ' year'      => $secs / 31556926 % 12,
         ' week'      => $secs / 604800 % 52,
@@ -55,9 +50,13 @@ function time_elapsed($secs){
         ' second'    => $secs % 60,
     );
 
-    foreach ($bit as $k => $v){
-        if($v > 1) $ret[] = $v . $k . 's';
-        if($v == 1) $ret[] = $v . $k;
+    foreach ($bit as $k => $v) {
+        if ($v > 1) {
+            $ret[] = $v . $k . 's';
+        }
+        if ($v == 1) {
+            $ret[] = $v . $k;
+        }
     }
     array_splice($ret, count($ret) - 1, 0, 'and');
 
@@ -384,7 +383,7 @@ window.createPie = createPie;
     <h2>Hits</h2>
     <div class="grid">
     <div id="hitrate" class="col">
-    <?php $hitRate = sprintf('%.1f' , $data['keyspace_hits'] / ($data['keyspace_hits'] + $data['keyspace_misses']) * 100); ?>
+    <?php $hitRate = sprintf('%.1f', $data['keyspace_hits'] / ($data['keyspace_hits'] + $data['keyspace_misses']) * 100); ?>
     <div class="key"><?php echo $hitRate ?>%</div>
     </div>
     <div class="col">
@@ -461,7 +460,7 @@ window.createPie = createPie;
     <div class="key">
         <?php
             $values = explode(',', $data["db$i"]);
-            foreach($values as $value) {
+            foreach ($values as $value) {
                 $kv = explode('=', $value, 2);
                 $keyData[$kv[0]] = $kv[1];
             }
