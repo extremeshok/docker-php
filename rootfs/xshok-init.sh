@@ -415,7 +415,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
 # Cron every 5mins
 */5 * * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html cron event run --due-now --quiet
 # Update plugins ever hour
-0 * * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all
+0 * * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all && /usr/local/bin/wp-cli --allow-root --path=/var/www/html wc update
 # Update core every 6 hours
 0 */6 * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update && /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update-db
 EOF

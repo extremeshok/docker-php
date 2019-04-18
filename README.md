@@ -70,6 +70,8 @@ https://github.com/codecasts/php-alpine#available-packages
 * shell alias wp = wp-cli --allow-root --path=/var/www/html
 * allow interactive bash shell for nobody user with the command "su-nobody"
 * save admin password if it was generated to /var/www/html/.xs_password
+* cronjob to run wordpress cron
+* cronjob to automatically update plugins, core and database
 
 # Wordpress extensions
 * amp
