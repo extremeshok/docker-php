@@ -455,12 +455,10 @@ fi
 if [ -d "/etc/php7/php-fpm-conf.d/" ] && [ -w "/etc/php7/php-fpm-conf.d/" ] ; then
 
   if [ "$XS_IONCUBE" == "yes" ] || [ "$XS_IONCUBE" == "true" ] || [ "$XS_IONCUBE" == "on" ] || [ "$XS_IONCUBE" == "1" ] ; then
-    echo "Enabling redis sessions"
-    cat << EOF > /etc/php7/conf.d/xs_ioncube.ini
-zend_extension=ioncube_loader_lin.so
-EOF
-  elif [ -f "/etc/php7/conf.d/xs_ioncube.ini" ] ; then
-    rm -f /etc/php7/conf.d/xs_ioncube.ini
+    echo "Enabling ioncube"
+    echo "zend_extension=ioncube_loader_lin_$(php -n -v 2>/dev/null | head -n 1 | cut -d" " -f2 | cut -d"." -f1,2 | xargs).so" > /etc/php7/conf.d/000000_ioncube.ini
+  elif [ -f "/etc/php7/conf.d/000000_ioncube.ini" ] ; then
+    rm -f /etc/php7/conf.d/000000_ioncube.ini
   fi
 
   if [ "$XS_REDIS_SESSIONS" == "yes" ] || [ "$XS_REDIS_SESSIONS" == "true" ] || [ "$XS_REDIS_SESSIONS" == "on" ] || [ "$XS_REDIS_SESSIONS" == "1" ] ; then
