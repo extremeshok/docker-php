@@ -14,6 +14,8 @@ XS_TIMEZONE=${PHP_TIMEZONE:-UTC}
 XS_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
 XS_CHOWN=${PHP_CHOWN:-yes}
 
+XS_IONCUBE=${PHP_IONCUBE:-yes}
+
 XS_SMTP_HOST=${PHP_SMTP_HOST:-}
 XS_SMTP_PORT=${PHP_SMTP_PORT:-587}
 XS_SMTP_USER=${PHP_SMTP_USER:-}
@@ -452,12 +454,23 @@ fi
 
 if [ -d "/etc/php7/php-fpm-conf.d/" ] && [ -w "/etc/php7/php-fpm-conf.d/" ] ; then
 
+  if [ "$XS_IONCUBE" == "yes" ] || [ "$XS_IONCUBE" == "true" ] || [ "$XS_IONCUBE" == "on" ] || [ "$XS_IONCUBE" == "1" ] ; then
+    echo "Enabling redis sessions"
+    cat << EOF > /etc/php7/conf.d/xs_ioncube.ini
+zend_extension=ioncube_loader_lin.so
+EOF
+  elif [ -f "/etc/php7/conf.d/xs_ioncube.ini" ] ; then
+    rm -f /etc/php7/conf.d/xs_ioncube.ini
+  fi
+
   if [ "$XS_REDIS_SESSIONS" == "yes" ] || [ "$XS_REDIS_SESSIONS" == "true" ] || [ "$XS_REDIS_SESSIONS" == "on" ] || [ "$XS_REDIS_SESSIONS" == "1" ] ; then
     echo "Enabling redis sessions"
     cat << EOF > /etc/php7/conf.d/xs_redis.ini
 session.save_handler = redis
 session.save_path = "tcp://${XS_REDIS_HOST}:${XS_REDIS_PORT}"
 EOF
+  elif [ -f "/etc/php7/conf.d/xs_redis.ini" ] ; then
+    rm -f /etc/php7/conf.d/xs_redis.ini
   fi
 
   echo "date.timezone = ${XS_TIMEZONE}" > /etc/php7/conf.d/xs_timezone.ini
