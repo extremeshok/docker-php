@@ -41,6 +41,7 @@ RUN echo  "**** Install php and some extensions ****" \
   php7-posix@php \
   php7-redis@php \
   php7-session@php \
+  php7-soap@php \
   php7-sodium@php \
   php7-sqlite3@php \
   php7-xml@php \

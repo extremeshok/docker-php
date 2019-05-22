@@ -145,6 +145,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * posix
 * redis
 * session
+* soap
 * sodium
 * sqlite3
 * xml
