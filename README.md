@@ -1,6 +1,6 @@
 # eXtremeSHOK.com Docker PHP-FPM 7.3 on Alpine Linux
 
-* Alpine Linux 3.8 with S6
+* Alpine Linux 3.9 with S6
 * cron (/etc/cron.d) enabled for scheduling tasks, run as user nobody
 * PHP 7.3 from CODECASTS PHP Repository for Alpine
 * IONICE set to -10

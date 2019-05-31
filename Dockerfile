@@ -1,4 +1,4 @@
-FROM extremeshok/baseimage-alpine:3.8 AS BUILD
+FROM extremeshok/baseimage-alpine:3.9 AS BUILD
 LABEL mantainer="Adrian Kriel <admin@extremeshok.com>" vendor="eXtremeSHOK.com"
 
 RUN echo "**** Install packages ****" \
@@ -9,7 +9,7 @@ RUN echo "**** Adding codecasts php-repo ****"
 ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 
 # add the repository, make sure you replace the correct versions if you want.
-RUN echo "@php https://dl.bintray.com/php-alpine/v3.8/php-7.3" >> /etc/apk/repositories
+RUN echo "@php https://dl.bintray.com/php-alpine/v3.9/php-7.3" >> /etc/apk/repositories
 
 # notice the @php is required to avoid getting default php packages from alpine instead.
 RUN echo  "**** Install php and some extensions ****" \
