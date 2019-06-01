@@ -36,6 +36,7 @@ XS_WORDPRESS_DATABASE_CHARSET=${PHP_WORDPRESS_DATABASE_CHARSET:-utf8mb4}
 XS_WORDPRESS_DATABASE_COLLATE=${PHP_WORDPRESS_DATABASE_COLLATE:-utf8mb4_unicode_ci}
 
 XS_WORDPRESS_UPDATE=${PHP_WORDPRESS_UPDATE:-yes}
+XS_WORDPRESS_UPDATE_PLUGINS=${PHP_WORDPRESS_UPDATE_PLUGINS:-yes}
 XS_WORDPRESS_CRONJOB=${PHP_WORDPRESS_CRONJOB:-yes}
 
 XS_WORDPRESS_CACHE_ENABLER=${PHP_WORDPRESS_CACHE_ENABLER:-yes}
@@ -403,12 +404,14 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
     echo "Updating Wordpress"
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update-db
-    /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all
   else
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html core version
+  fi
+  if [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "yes" ] || [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "true" ] || [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "on" ] || [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "1" ] ; then
+    /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all
+  else
     /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin status
   fi
-
   if [ "$XS_WORDPRESS_CRONJOB" == "yes" ] || [ "$XS_WORDPRESS_CRONJOB" == "true" ] || [ "$XS_WORDPRESS_CRONJOB" == "on" ] || [ "$XS_WORDPRESS_CRONJOB" == "1" ] ; then
     echo "Enabling redis sessions"
     if [ ! -f "/etc/cron.d/wp-cli" ] ; then
