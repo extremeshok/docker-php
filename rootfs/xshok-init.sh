@@ -433,11 +433,11 @@ print \"   define( 'DISABLE_WP_CRON', true ); }\"
 print \"\"
 }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
 else
-  sed -i "s|'DISABLE_WP_CRON', false|'DISABLE_WP_CRON', true" /var/www/html/wp-config.php
+  sed -i "s|'DISABLE_WP_CRON', false|'DISABLE_WP_CRON', true|g" /var/www/html/wp-config.php
 fi
   else
     if grep -q "'DISABLE_WP_CRON', true" /var/www/html/wp-config.php ; then
-      sed -i "s|'DISABLE_WP_CRON', true|'DISABLE_WP_CRON', false" /var/www/html/wp-config.php
+      sed -i "s|'DISABLE_WP_CRON', true|'DISABLE_WP_CRON', false|g" /var/www/html/wp-config.php
     fi
     if [ -f "/etc/cron.d/wp-cli" ] ; then
       rm -f /etc/cron.d/wp-cli
