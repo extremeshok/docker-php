@@ -249,7 +249,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
         print \"# eXtremeSHOK.com Optimisation\"
         print \"# Reduce the number of database calls when loading your site\"
         # shellcheck disable=SC1087
-        print \"if (\empty(\$HTTP_HOST)) { \"
+        print \"if (empty(\$HTTP_HOST)) { \"
         print \"define( 'HTTP_HOST', ''.\$_SERVER['SERVER_NAME'].'' );\"
         print \"}\"
         print \"# Reduce the number of database calls when loading your site\"
@@ -278,6 +278,11 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
         print \"define('WP_AUTO_UPDATE_CORE', 'minor' );\"
         print \"define('DISABLE_WP_CRON', false);\"
         print \"define('CONCATENATE_SCRIPTS', false);\"
+        print \"# Use X-Forwarded-For HTTP Header to Get Visitors Real IP Address\"
+        print \"if (isset(\$_SERVER['HTTP_X_FORWARDED_FOR'])) {\"
+        print \"\$http_x_headers = explode( ',', \$_SERVER['HTTP_X_FORWARDED_FOR'] );\"
+        print \"\$_SERVER['REMOTE_ADDR'] = \$http_x_headers[0];\"
+        print \"}\"
         print \"\"
         }{ print }" /var/www/html/wp-config.php > /var/www/html/wp-config.php.new && mv -f /var/www/html/wp-config.php.new /var/www/html/wp-config.php
 
