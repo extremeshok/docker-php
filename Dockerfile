@@ -46,6 +46,7 @@ RUN echo  "**** Install php and some extensions ****" \
   php7-sqlite3@php \
   php7-xml@php \
   php7-xmlreader@php \
+  php7-zip@php \
   php7-zlib@php
 
 # allow for php on the command line
