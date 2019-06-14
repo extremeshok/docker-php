@@ -151,5 +151,6 @@ https://github.com/codecasts/php-alpine#available-packages
 * sqlite3
 * xml
 * xmlreader
+* xsl
 * zip
 * zlib
