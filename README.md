@@ -120,6 +120,7 @@ https://github.com/codecasts/php-alpine#available-packages
 
 # PHP Extensions
 * bcmath
+* calendar
 * ctype
 * curl
 * dom

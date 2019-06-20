@@ -15,6 +15,7 @@ RUN echo "@php https://dl.bintray.com/php-alpine/v3.9/php-7.3" >> /etc/apk/repos
 RUN echo  "**** Install php and some extensions ****" \
   && apk-install php7@php php7-fpm@php \
   php7-bcmath@php \
+  php7-calendar@php \
   php7-ctype@php \
   php7-curl@php \
   php7-dom@php \
