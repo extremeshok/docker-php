@@ -20,6 +20,7 @@
 * Optional: set ownership of /var/www/html to nobody:nobody
 * Optional: Install wordpress, selected plugins and optimise it
 * Optional: Ioncube
+* Optional: Disable ondemand PM
 # PHP-Redis-sessions
 * PHP_REDIS_SESSIONS=yes
 * PHP_REDIS_HOST=redis
@@ -37,6 +38,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * PHP_DISABLE_FUNCTIONS=shell_exec (set to false to disable, can use a comma separated list)
 * PHP_CHOWN=true (set to false to disable)
 * PHP_IONCUBE=true (set to false to disable)
+* PHP_ONDEMAND=true (set to false to disable)
 
 # EXTERNAL SMTP
 * PHP_SMTP_HOST=

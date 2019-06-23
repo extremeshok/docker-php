@@ -18,6 +18,7 @@ services:
         - TZ=${TZ}
         - PHP_TIMEZONE=UTC
         - HOSTNAME=${HOSTNAME}
+        - PHP_ONDEMAND=no
         - PHP_REDIS_SESSIONS=yes
         - PHP_REDIS_HOST=redis
         - PHP_REDIS_PORT=6379

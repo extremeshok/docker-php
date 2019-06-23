@@ -13,6 +13,7 @@ XS_REDIS_PORT=${PHP_REDIS_PORT:-6379}
 XS_TIMEZONE=${PHP_TIMEZONE:-UTC}
 XS_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-shell_exec}
 XS_CHOWN=${PHP_CHOWN:-yes}
+XS_ONDEMAND=${PHP_ONDEMAND:-yes}
 
 XS_IONCUBE=${PHP_IONCUBE:-yes}
 
@@ -497,6 +498,15 @@ EOF
 EOF
 
   echo "memory_limit = ${XS_MEMORY_LIMIT}M" > /etc/php7/conf.d/xs_memory_limit.ini
+fi
+
+if [ -f "/etc/php7/php-fpm.d/www.conf" ] && [ -w "/etc/php7/php-fpm.d/www.conf" ] ; then
+  if [ "$XS_ONDEMAND" == "no" ] || [ "$XS_ONDEMAND" == "false" ] || [ "$XS_ONDEMAND" == "off" ] || [ "$XS_ONDEMAND" == "0" ] ; then
+    echo "Setting PHP PM to dynmic"
+    sed -i 's|pm = ondemand|pm = dynamic|g' /etc/php7/php-fpm.d/www.conf
+  else
+    sed -i 's|pm = dynamic|pm = ondemand|g' /etc/php7/php-fpm.d/www.conf
+  fi
 fi
 
 echo "#### Checking PHP configs ####"
