@@ -502,7 +502,7 @@ fi
 
 if [ -f "/etc/php7/php-fpm.d/www.conf" ] && [ -w "/etc/php7/php-fpm.d/www.conf" ] ; then
   if [ "$XS_ONDEMAND" == "no" ] || [ "$XS_ONDEMAND" == "false" ] || [ "$XS_ONDEMAND" == "off" ] || [ "$XS_ONDEMAND" == "0" ] ; then
-    echo "Setting PHP PM to dynmic"
+    echo "Setting PHP PM to dynamic"
     sed -i 's|pm = ondemand|pm = dynamic|g' /etc/php7/php-fpm.d/www.conf
   else
     sed -i 's|pm = dynamic|pm = ondemand|g' /etc/php7/php-fpm.d/www.conf
