@@ -106,7 +106,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * woo-gutenberg-products-block
 * woocommerce
 * wordpress-seo
-* wp-mail-smtp
+* post-smtp
 
 
 # Extra Packages

@@ -325,7 +325,8 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate disable-admin-notices
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate duplicate-post
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate tinymce-advanced
-        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-mail-smtp
+        #/usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-mail-smtp
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate post-smtp
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate amp
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate better-search-replace
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate https://envato.github.io/wp-envato-market/dist/envato-market.zip
