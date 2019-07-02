@@ -80,7 +80,6 @@ https://github.com/codecasts/php-alpine#available-packages
 
 # Wordpress extensions
 * amp
-* better-search-replace
 * contact-form-7
 * disable-admin-notices
 * disable-emojis
@@ -89,7 +88,6 @@ https://github.com/codecasts/php-alpine#available-packages
 * easy-theme-and-plugin-upgrades
 * envato-market
 * google-analytics-dashboard-for-wp
-* google-sitemap-generator
 * gtmetrix-for-wordpress
 * health-check
 * heartbeat-control
@@ -105,8 +103,8 @@ https://github.com/codecasts/php-alpine#available-packages
 * two-factor
 * woo-gutenberg-products-block
 * woocommerce
-* wordpress-seo
-* post-smtp
+* theseoframework
+* wp-mail-smtp
 
 
 # Extra Packages
