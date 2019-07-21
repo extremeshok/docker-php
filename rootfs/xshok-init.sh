@@ -330,6 +330,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate amp
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate https://envato.github.io/wp-envato-market/dist/envato-market.zip
 
+        /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate wp-maintenance-mode
         /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin install --activate contact-form-7
 
 # CRON

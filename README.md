@@ -105,6 +105,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * woocommerce
 * theseoframework
 * wp-mail-smtp
+* wp-maintenance-mode
 
 
 # Extra Packages
