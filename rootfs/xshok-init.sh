@@ -405,9 +405,6 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
     fi
   fi
 
-  /usr/local/bin/wp-cli --allow-root --path=/var/www/html core version
-  /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin status
-
   if [ "$XS_WORDPRESS_CRONJOB" == "yes" ] || [ "$XS_WORDPRESS_CRONJOB" == "true" ] || [ "$XS_WORDPRESS_CRONJOB" == "on" ] || [ "$XS_WORDPRESS_CRONJOB" == "1" ] ; then
     echo "Enabling redis sessions"
     if [ ! -f "/etc/cron.d/wp-cli" ] ; then
