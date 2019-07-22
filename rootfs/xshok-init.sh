@@ -63,7 +63,7 @@ XS_MEMORY_LIMIT="${XS_MEMORY_LIMIT%M}"
 XS_MEMORY_LIMIT="${XS_MEMORY_LIMIT%m}"
 
 if [[ $XS_MEMORY_LIMIT -lt 64 ]] ; then
-  echo "WARNING: XS_MEMORY_LIMIT if ${XS_MEMORY_LIMIT} too low, setting to 64"
+  echo "WARNING: XS_MEMORY_LIMIT ${XS_MEMORY_LIMIT} is too low, setting to 64"
   XS_MEMORY_LIMIT=64
 fi
 #XS_MEMORY_LIMIT
@@ -405,18 +405,9 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
     fi
   fi
 
-  if [ "$XS_WORDPRESS_UPDATE" == "yes" ] || [ "$XS_WORDPRESS_UPDATE" == "true" ] || [ "$XS_WORDPRESS_UPDATE" == "on" ] || [ "$XS_WORDPRESS_UPDATE" == "1" ] ; then
-    echo "Updating Wordpress"
-    /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update
-    /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update-db
-  else
-    /usr/local/bin/wp-cli --allow-root --path=/var/www/html core version
-  fi
-  if [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "yes" ] || [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "true" ] || [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "on" ] || [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "1" ] ; then
-    /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all
-  else
-    /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin status
-  fi
+  /usr/local/bin/wp-cli --allow-root --path=/var/www/html core version
+  /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin status
+
   if [ "$XS_WORDPRESS_CRONJOB" == "yes" ] || [ "$XS_WORDPRESS_CRONJOB" == "true" ] || [ "$XS_WORDPRESS_CRONJOB" == "on" ] || [ "$XS_WORDPRESS_CRONJOB" == "1" ] ; then
     echo "Enabling redis sessions"
     if [ ! -f "/etc/cron.d/wp-cli" ] ; then
@@ -424,11 +415,21 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
 # eXtremeSHOK.com :: WP-CLI
 # Cron every 5mins
 */5 * * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html cron event run --due-now --quiet
+EOF
+if [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "yes" ] || [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "true" ] || [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "on" ] || [ "$XS_WORDPRESS_UPDATE_PLUGINS" == "1" ] ; then
+echo "Enabled: Wordpress plugin updates"
+  cat << EOF >> /etc/cron.d/wp-cli
 # Update plugins ever hour
 0 * * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html plugin update --all && /usr/local/bin/wp-cli --allow-root --path=/var/www/html wc update
+EOF
+fi
+if [ "$XS_WORDPRESS_UPDATE" == "yes" ] || [ "$XS_WORDPRESS_UPDATE" == "true" ] || [ "$XS_WORDPRESS_UPDATE" == "on" ] || [ "$XS_WORDPRESS_UPDATE" == "1" ] ; then
+  echo "Enabled: Wordpress core updates"
+  cat << EOF >> /etc/cron.d/wp-cli
 # Update core every 6 hours
 0 */6 * * * /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update && /usr/local/bin/wp-cli --allow-root --path=/var/www/html core update-db
 EOF
+fi
 fi
 if ! grep -q "DISABLE_WP_CRON" /var/www/html/wp-config.php ; then
 awk "/That's all, stop editing/ {
