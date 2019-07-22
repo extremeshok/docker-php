@@ -406,7 +406,7 @@ if [ "$XS_WORDPRESS" == "yes" ] || [ "$XS_WORDPRESS" == "true" ] || [ "$XS_WORDP
   fi
 
   if [ "$XS_WORDPRESS_CRONJOB" == "yes" ] || [ "$XS_WORDPRESS_CRONJOB" == "true" ] || [ "$XS_WORDPRESS_CRONJOB" == "on" ] || [ "$XS_WORDPRESS_CRONJOB" == "1" ] ; then
-    echo "Enabling redis sessions"
+    echo "Enabling wordpress cronjob"
     if [ ! -f "/etc/cron.d/wp-cli" ] ; then
       cat << EOF > /etc/cron.d/wp-cli
 # eXtremeSHOK.com :: WP-CLI
