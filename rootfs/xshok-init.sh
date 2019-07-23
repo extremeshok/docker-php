@@ -486,7 +486,7 @@ EOF
 
   cat << EOF > /etc/php7/conf.d/xs_max_upload_size.ini
   upload_max_filesize = ${XS_MAX_UPLOAD_SIZE}M
-  post_max_size = ${XS_MAX_UPLOAD_SIZE}M
+  post_max_size = $((XS_MAX_UPLOAD_SIZE+2))M
 EOF
 
   cat << EOF > /etc/php7/conf.d/xs_max_time.ini
