@@ -12,41 +12,41 @@ ADD https://repos.php.earth/alpine/phpearth.rsa.pub /etc/apk/keys/phpearth.rsa.p
 RUN echo "@php https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
 
 RUN echo  "**** Install php and some extensions ****" \
-  && apk-install php7@php php7-fpm@php\
-  php7-bcmath@php \
-  php7-calendar@php \
-  php7-ctype@php \
-  php7-curl@php \
-  php7-dom@php \
-  php7-exif@php \
-  php7-gd@php \
-  php7-iconv@php \
-  php7-imap@php \
-  php7-intl@php \
-  php7-json@php \
-  php7-mbstring@php \
-  php7-mysqli@php \
-  php7-mysqlnd@php \
-  php7-opcache@php \
-  php7-openssl@php \
-  php7-pcntl@php \
-  php7-pdo@php \
-  php7-pdo_mysql@php \
-  php7-pdo_odbc@php \
-  php7-pdo_pgsql@php \
-  php7-pdo_sqlite@php \
-  php7-pear@php \
-  php7-phar@php \
-  php7-posix@php \
-  php7-session@php \
-  php7-shmop@php \
-  php7-soap@php \
-  php7-sodium@php \
-  php7-sqlite3@php \
-  php7-xml@php \
-  php7-xmlreader@php \
-  php7-xsl@php \
-  php7-zip@php
+  && apk-install php7.2@php php7.2-fpm@php\
+  php7.2-bcmath@php \
+  php7.2-calendar@php \
+  php7.2-ctype@php \
+  php7.2-curl@php \
+  php7.2-dom@php \
+  php7.2-exif@php \
+  php7.2-gd@php \
+  php7.2-iconv@php \
+  php7.2-imap@php \
+  php7.2-intl@php \
+  php7.2-json@php \
+  php7.2-mbstring@php \
+  php7.2-mysqli@php \
+  php7.2-mysqlnd@php \
+  php7.2-opcache@php \
+  php7.2-openssl@php \
+  php7.2-pcntl@php \
+  php7.2-pdo@php \
+  php7.2-pdo_mysql@php \
+  php7.2-pdo_odbc@php \
+  php7.2-pdo_pgsql@php \
+  php7.2-pdo_sqlite@php \
+  php7.2-pear@php \
+  php7.2-phar@php \
+  php7.2-posix@php \
+  php7.2-session@php \
+  php7.2-shmop@php \
+  php7.2-soap@php \
+  php7.2-sodium@php \
+  php7.2-sqlite3@php \
+  php7.2-xml@php \
+  php7.2-xmlreader@php \
+  php7.2-xsl@php \
+  php7.2-zip@php
 
 # notice the @php is required to avoid getting default php packages from alpine instead.
 RUN echo  "**** Install @php and some extensions ****" \
