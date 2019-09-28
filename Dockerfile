@@ -5,52 +5,52 @@ RUN echo "**** Install packages ****" \
   && apk-install bash ca-certificates pcre fcgi supervisor curl unzip imagemagick jpegoptim pngquant optipng gifsicle sqlite less mariadb-client
 
 RUN echo "**** Adding codecasts php-repo ****"
-## https://github.com/codecasts/php-alpine trust this project public key to trust the packages.
-ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
+## https://docs.php.earth/linux/alpine/ trust this project public key to trust the packages.
+ADD https://repos.php.earth/alpine/phpearth.rsa.pub /etc/apk/keys/phpearth.rsa.pub
 
 # add the repository, make sure you replace the correct versions if you want.
-RUN echo "@php https://dl.bintray.com/php-alpine/v3.9/php-7.3" >> /etc/apk/repositories
+RUN echo "@php https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
 
 # notice the @php is required to avoid getting default php packages from alpine instead.
 RUN echo  "**** Install php and some extensions ****" \
-  && apk-install php7@php php7-fpm@php \
-  php7-bcmath@php \
-  php7-calendar@php \
-  php7-ctype@php \
-  php7-curl@php \
-  php7-dom@php \
-  php7-exif@php \
-  php7-gd@php \
-  php7-iconv@php \
-  php7-imagick@php \
-  php7-imap@php \
-  php7-intl@php \
-  php7-json@php \
-  php7-mbstring@php \
-  php7-mysqli@php \
-  php7-mysqlnd@php \
-  php7-opcache@php \
-  php7-openssl@php \
-  php7-pcntl@php \
-  php7-pdo_mysql@php \
-  php7-pdo_odbc@php \
-  php7-pdo_pgsql@php \
-  php7-pdo_sqlite@php \
-  php7-pdo@php \
-  php7-pear@php \
-  php7-phar@php \
-  php7-posix@php \
-  php7-redis@php \
-  php7-session@php \
-  php7-shmop@php \
-  php7-soap@php \
-  php7-sodium@php \
-  php7-sqlite3@php \
-  php7-xml@php \
-  php7-xmlreader@php \
-  php7-xsl@php \
-  php7-zip@php \
-  php7-zlib@php
+  && apk-install php7 php7-fpm \
+  php7-bcmath \
+  php7-calendar \
+  php7-ctype\
+  php7-curl \
+  php7-dom \
+  php7-exif \
+  php7-gd \
+  php7-iconv \
+  php7-imap \
+  php7-intl \
+  php7-json \
+  php7-mbstring \
+  php7-mysqli \
+  php7-mysqlnd \
+  php7-opcache \
+  php7-openssl \
+  php7-pcntl \
+  php7-pdo \
+  php7-pdo_mysql \
+  php7-pdo_odbc \
+  php7-pdo_pgsql \
+  php7-pdo_sqlite \
+  php7-pear \
+  php7-phar \
+  php7-posix \
+  php7-session \
+  php7-shmop \
+  php7-soap \
+  php7-sodium \
+  php7-sqlite3 \
+  php7-xml \
+  php7-xmlreader \
+  php7-xsl \
+  php7-zip \
+  php7.2-imagick@php \
+  php7.2-redis@php \
+  php7.2-zlib@php
 
 # allow for php on the command line
 RUN ln -s /usr/bin/php7 /usr/bin/php

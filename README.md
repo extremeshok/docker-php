@@ -1,10 +1,10 @@
-# eXtremeSHOK.com Docker PHP-FPM 7.3 on Alpine Linux
+# eXtremeSHOK.com Docker PHP-FPM 7.2 on Alpine Linux
 https://hub.docker.com/r/extremeshok/php
 
 # Features
 * Alpine Linux 3.9 with S6
 * cron (/etc/cron.d) enabled for scheduling tasks, run as user nobody
-* PHP 7.3 from CODECASTS PHP Repository for Alpine
+* PHP 7.2 from Alpine with PHP.Earth Repository for Alpine
 * IONICE set to -19
 * Zend opcache enabled
 * Low memory usage (~30MB)
@@ -130,7 +130,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * exif
 * gd
 * iconv
-* imagick
+* imagick **php.earth**
 * imap
 * intl
 * json
@@ -148,7 +148,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * pear
 * phar
 * posix
-* redis
+* redis **php.earth**
 * session
 * shmop
 * soap
@@ -158,4 +158,4 @@ https://github.com/codecasts/php-alpine#available-packages
 * xmlreader
 * xsl
 * zip
-* zlib
+* zlib **php.earth**
