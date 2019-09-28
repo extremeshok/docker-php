@@ -4,14 +4,6 @@ LABEL mantainer="Adrian Kriel <admin@extremeshok.com>" vendor="eXtremeSHOK.com"
 RUN echo "**** Install packages ****" \
   && apk-install bash ca-certificates pcre fcgi supervisor curl unzip imagemagick jpegoptim pngquant optipng gifsicle sqlite less mariadb-client
 
-RUN echo "**** Adding codecasts php-repo ****"
-## https://docs.php.earth/linux/alpine/ trust this project public key to trust the packages.
-ADD https://repos.php.earth/alpine/phpearth.rsa.pub /etc/apk/keys/phpearth.rsa.pub
-
-# add the repository, make sure you replace the correct versions if you want.
-RUN echo "@php https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
-
-# notice the @php is required to avoid getting default php packages from alpine instead.
 RUN echo  "**** Install php and some extensions ****" \
   && apk-install php7 php7-fpm \
   php7-bcmath \
@@ -47,7 +39,18 @@ RUN echo  "**** Install php and some extensions ****" \
   php7-xml \
   php7-xmlreader \
   php7-xsl \
-  php7-zip \
+  php7-zip
+
+RUN echo "**** Adding codecasts php-repo ****"
+## https://docs.php.earth/linux/alpine/ trust this project public key to trust the packages.
+ADD https://repos.php.earth/alpine/phpearth.rsa.pub /etc/apk/keys/phpearth.rsa.pub
+
+# add the repository, make sure you replace the correct versions if you want.
+RUN echo "@php https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
+
+# notice the @php is required to avoid getting default php packages from alpine instead.
+RUN echo  "**** Install @php and some extensions ****" \
+  && apk-install \
   php7.2-imagick@php \
   php7.2-redis@php \
   php7.2-zlib@php
