@@ -16,7 +16,7 @@ RUN echo  "**** Install php and some extensions ****" \
   && apk-install php7 php7-fpm \
   php7-bcmath \
   php7-calendar \
-  php7-ctype\
+  php7-ctype \
   php7-curl \
   php7-dom \
   php7-exif \
