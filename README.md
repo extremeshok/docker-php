@@ -4,7 +4,7 @@ https://hub.docker.com/r/extremeshok/php
 # Features
 * Alpine Linux 3.9 with S6
 * cron (/etc/cron.d) enabled for scheduling tasks, run as user nobody
-* PHP 7.2 from Alpine with PHP.Earth Repository for Alpine
+* PHP 7.2 from bintray.com/php-alpine for Alpine
 * IONICE set to -19
 * Zend opcache enabled
 * Low memory usage (~30MB)
@@ -130,7 +130,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * exif
 * gd
 * iconv
-* imagick **php.earth**
+* imagick
 * imap
 * intl
 * json
@@ -148,7 +148,7 @@ https://github.com/codecasts/php-alpine#available-packages
 * pear
 * phar
 * posix
-* redis **php.earth**
+* redis
 * session
 * shmop
 * soap
@@ -158,4 +158,4 @@ https://github.com/codecasts/php-alpine#available-packages
 * xmlreader
 * xsl
 * zip
-* zlib **php.earth**
+* zlib
